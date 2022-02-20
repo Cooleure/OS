@@ -1,5 +1,7 @@
 #include "block.h"
 
-int init_disk_sos (const char* dirname){
-  
+virtual_disk_t vitual_disk_sos;
+
+void init_disk_sos (FILE* dirname){
+  vitual_disk_sos.storage = dirname;
 }

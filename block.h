@@ -13,12 +13,10 @@
 
 /**
  * @brief Initialization of virtual_disk_sos and 
- * returns 0 if Ok or 1 if KO
  * 
- * @param dirname 
- * @return int 
+ * @param dirname  
  */
-int init_disk_sos (const char* dirname);
+void init_disk_sos (const char* dirname);
 
 /**
  * @brief save the catalog on the virtual disk
