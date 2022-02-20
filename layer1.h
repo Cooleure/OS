@@ -1,12 +1,12 @@
 /**
- * @file block.h
+ * @file layer1.h
  * @author Florian Dion - Nicolas Dejean - Nathan Fleury
  * @brief 
  * @version 0.1
  * @date 2022-02-19
  */
-#ifndef BLOCK_H
-#define BLOCK_H
+#ifndef LAYER1_H
+#define LAYER1_H
 
 #include "struct.h"
 #define READ_FAILURE 404
