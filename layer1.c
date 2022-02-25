@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "layer1.h"
 #include "struct.h"
 
@@ -12,4 +16,19 @@ void init_disk_sos (FILE* dirname){
 
 int compute_nblock(const int size){
   return ceil(size/BLOCK_SIZE); //Arrondi par excès
+}
+
+int write_block (const block_t b, int pos){
+  int fd = open(virtual_disk_sos.storage, O_WRONLY);
+  if (fd == -1){
+    fprintf(stderr, "Probleme d'ouverture du disque\n");
+    return 1;
+  }
+  lseek(fd, pos*BLOCK_SIZE, SEEK_SET);
+  if(write(fd, &b, BLOCK_SIZE) != BLOCK_SIZE){
+    fprintf(stderr, "Probleme d'ecriture d'un bloc\n");
+    return 1;
+  }
+  close(fd);
+  return 0;
 }
