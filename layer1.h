@@ -53,11 +53,10 @@ int write_block (const block_t b, int pos);
 int read_block (block_t block, int pos);
 
 /**
- * @brief Print the block b in Hexadecimal on file name f
+ * @brief Print the block b
  *
  * @param b
- * @param f
  */
-void print_block (const block_t b, char* f);
+void print_block (const block_t b);
 
 #endif

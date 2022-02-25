@@ -55,3 +55,10 @@ int read_block (block_t block, int pos){
   return 0;
 
 }
+
+
+void print_block (const block_t b, char* f){
+  for(int i=0; i<BLOCK_SIZE; i++){
+    printf("%x",b.data[i]);
+  }
+}
