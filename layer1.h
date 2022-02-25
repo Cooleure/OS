@@ -14,11 +14,11 @@
 extern virtual_disk_t vitual_disk_sos;
 
 /**
- * @brief Initialization of virtual_disk_sos and
+ * @brief Initialization of virtual_disk_sos with the vdisk file
  *
  * @param dirname
  */
-void init_disk_sos (const char* dirname);
+void init_disk_sos (char* dirname);
 
 /**
  * @brief save the catalog on the virtual disk
