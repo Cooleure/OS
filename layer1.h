@@ -11,6 +11,8 @@
 #include "struct.h"
 #define READ_FAILURE 404
 
+extern virtual_disk_t vitual_disk_sos;
+
 /**
  * @brief Initialization of virtual_disk_sos and
  *
