@@ -69,10 +69,4 @@ int clear_block (int pos);
  */
 void print_block (const block_t b);
 
-/**
- * @brief Closes the virtual disk
- *
- */
-int switch_off ();
-
 #endif
