@@ -43,6 +43,11 @@ int read_block (block_t block, int pos){
   return 0;
 }
 
+int clear_block (int pos){
+  block_t block;
+  return write_block(block, pos);
+}
+
 void print_block (const block_t b){
   for(int i=0; i<BLOCK_SIZE; i++){
     printf("%x",b.data[i]);

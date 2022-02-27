@@ -55,10 +55,24 @@ int write_block (const block_t b, int pos);
 int read_block (block_t block, int pos);
 
 /**
+ * @brief Clear memory of a block
+ *
+ * @param pos
+ * @return int
+ */
+int clear_block (int pos);
+
+/**
  * @brief Print the block b
  *
  * @param b
  */
 void print_block (const block_t b);
+
+/**
+ * @brief Closes the virtual disk
+ *
+ */
+int switch_off ();
 
 #endif
