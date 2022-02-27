@@ -15,7 +15,7 @@
   *
   * @Return 0 if an error occurs
   */
-int write_super_block(virtual_disk_t * vitual_disk_sos);
+int write_super_block(virtual_disk_t * virtual_disk_sos);
 
 /**
  * @brief Read the Superblock of disk OS
@@ -24,7 +24,7 @@ int write_super_block(virtual_disk_t * vitual_disk_sos);
  *
  * @Return super block else NULL
  */
-super_block_s read_super_block(virtual_disk_t * vitual_disk_sos);
+super_block_t read_super_block(virtual_disk_t * virtual_disk_sos);
 
 
 

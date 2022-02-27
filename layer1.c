@@ -10,8 +10,6 @@
 
 virtual_disk_t virtual_disk_sos;
 
-
-
 void init_disk_sos ( char* dirname){
   strcat(dirname, "/d0");
   virtual_disk_sos.storage = fopen(dirname, "w+b");
