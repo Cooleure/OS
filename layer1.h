@@ -11,7 +11,7 @@
 #include "struct.h"
 #define READ_FAILURE 404
 
-extern virtual_disk_t vitual_disk_sos;
+extern virtual_disk_t virtual_disk_sos;
 
 /**
  * @brief Initialization of virtual_disk_sos with the vdisk file
@@ -52,7 +52,7 @@ int write_block (const block_t b, int pos);
  * @param pos
  * @return int
  */
-int read_block (block_t block, int pos);
+int read_block (block_t * block, int pos);
 
 /**
  * @brief Clear memory of a block
