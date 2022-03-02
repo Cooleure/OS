@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "layer1.h"
+#include "layer2.h"
 #include "struct.h"
 
 virtual_disk_t virtual_disk_sos;
@@ -13,6 +14,13 @@ virtual_disk_t virtual_disk_sos;
 void init_disk_sos ( char* dirname){
   strcat(dirname, "/d0");
   virtual_disk_sos.storage = fopen(dirname, "w+b");
+
+  if((read_inodes_table(&virtual_disk_sos.inodes)) == READ_FAILURE){
+    return 1;
+  }
+  if((read_super_block(&virtual_disk_sos.super_block)) == READ_FAILURE){
+    return 1;
+  }
 }
 
 int compute_nblock(const int size){

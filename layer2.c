@@ -5,7 +5,8 @@
 #include "layer2.h"
 #include "layer1.h"
 
-inode_table_t inodes_table;
+
+//inode_table_t inodes_table;
 
 
 int write_super_block(){
@@ -30,6 +31,31 @@ int read_super_block(super_block_t * super_block){
 
   if (fread(super_block, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != SUPER_BLOCK_SIZE*BLOCK_SIZE){
     fprintf(stderr, "Block reading problem\n");
+    return READ_FAILURE;
+  }
+  return 0;
+}
+
+void update_free_byte (int nbBlock, char sign, super_block_t * super_block){
+  switch (sign)
+  {
+  case '+':
+    super_block->first_free_byte += nbBlock * BLOCK_SIZE;
+    break;
+  case '-':
+    super_block->first_free_byte -= nbBlock * BLOCK_SIZE;
+  
+  default:
+    break;
+  }
+}
+
+
+int read_inodes_table(inode_table_t * table){
+  fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
+
+  if (fread(table, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE){
+    fprintf(stderr, "Inode table reading problem\n");
     return READ_FAILURE;
   }
   return 0;

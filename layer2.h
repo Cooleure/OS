@@ -10,7 +10,7 @@
  #define READ_FAILURE 404
  #include "struct.h"
 
- extern inode_table_t inodes_table;
+ //extern inode_table_t inodes_table;
 
  /**
   * @brief Creation the Superblock of disk OS
@@ -30,6 +30,21 @@ int write_super_block();
  */
 int read_super_block(super_block_t * super_block);
 
+/**
+ * @brief Update the first free byte in the super block
+ * 
+ * @param nbBlock 
+ * @param signe (+ or -)
+ */
+void update_free_byte (int nbBlock, char sign, super_block_t * super_block);
 
+
+/**
+ * @brief Read the inode table on the system, return 0 if OK or READ_FAILURE if KO
+ * 
+ * @param table 
+ * @return int 
+ */
+int read_inodes_table(inode_table_t * table);
 
 #endif
