@@ -60,3 +60,13 @@ int read_inodes_table(inode_table_t * table){
   }
   return 0;
 }
+
+int write_inodes_table(){
+  fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
+
+  if (fwrite(virtual_disk_sos.inodes, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE){
+    fprintf(stderr, "Inode writing problem\n");
+    return 1;
+  }
+  return 0;
+}
