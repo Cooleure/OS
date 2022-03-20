@@ -1,3 +1,11 @@
+/**
+ * @file layer2.c
+ * @author Florian Dion - Nicolas Dejean - Nathan Fleury
+ * @brief
+ * @version 0.1
+ * @date 2022-02-20
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -44,7 +52,7 @@ void update_free_byte (int nbBlock, char sign, super_block_t * super_block){
     break;
   case '-':
     super_block->first_free_byte -= nbBlock * BLOCK_SIZE;
-  
+
   default:
     break;
   }

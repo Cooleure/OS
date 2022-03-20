@@ -15,7 +15,7 @@ sources=$(wildcard *.c)
 %.o: %.c
 	gcc -c $(CFLAGS) $*.c -o $*.o
 
-%.d: %.c	
+%.d: %.c
 	@set -e; rm -f $@; \
 	$(CC) -M $(CFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
