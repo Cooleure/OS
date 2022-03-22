@@ -32,33 +32,40 @@ int read_super_block(super_block_t * super_block);
 
 /**
  * @brief Update the first free byte in the super block
- * 
- * @param nbBlock 
- * @param signe (+ or -)
+ *
+ * @param nbBlock
+ * @param sign (+ or -)
  */
-void update_free_byte (int nbBlock, char sign, super_block_t * super_block);
+void update_first_free_byte (int nbBlock, char sign, super_block_t * super_block);
 
 
 /**
  * @brief Read the inode table on the system, return 0 if OK or READ_FAILURE if KO
- * 
- * @param table 
- * @return int 
+ *
+ * @param table
+ * @return int
  */
 int read_inodes_table(inode_table_t * table);
 
 /**
  * @brief Write the inodes table on the system with virtual disk virtual_disk_sos.inodes
- * 
+ *
  * @return int : 0 if OK else 1
  */
 int write_inodes_table();
 
 /**
  * @brief delete inode i, replace others ant modify the super_block
- * 
- * @param i 
+ *
+ * @param i
  */
 void delete_inode(int i);
+
+/**
+ * @brief inits an inode
+ *
+ * @param i
+ */
+inode_t init_inode();
 
 #endif

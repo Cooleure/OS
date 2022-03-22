@@ -11,16 +11,26 @@
 
 virtual_disk_t virtual_disk_sos;
 
-void init_disk_sos ( char* dirname){
-  strcat(dirname, "/d0");
-  virtual_disk_sos.storage = fopen(dirname, "w+b");
-
-  if((read_inodes_table(&virtual_disk_sos.inodes)) == READ_FAILURE){
-    return 1;
+int init_disk_sos(char* dirname){
+  char *tmp = malloc(sizeof(char));
+  strcpy(tmp, dirname);
+  strcat(tmp, "/d0");
+  virtual_disk_sos.storage = fopen(tmp, "r+");
+  fseek(virtual_disk_sos.storage, 0, SEEK_END);
+  if(ftell(virtual_disk_sos.storage) == 0){
+    write_super_block();
+    write_inodes_table();
   }
   if((read_super_block(&virtual_disk_sos.super_block)) == READ_FAILURE){
-    return 1;
+    free(tmp);
+    return 0;
   }
+  if((read_inodes_table(&virtual_disk_sos.inodes)) == READ_FAILURE){
+    free(tmp);
+    return 0;
+  }
+  free(tmp);
+  return 1;
 }
 
 int compute_nblock(const int size){

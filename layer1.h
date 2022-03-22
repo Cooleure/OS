@@ -18,7 +18,7 @@ extern virtual_disk_t virtual_disk_sos;
  *
  * @param dirname
  */
-void init_disk_sos (char* dirname);
+int init_disk_sos(char* dirname);
 
 /**
  * @brief save the catalog on the virtual disk
