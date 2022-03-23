@@ -13,15 +13,25 @@
 #include "layer2.h"
 #include "layer1.h"
 
-int write_super_block(){
-  super_block_t super_block;
-  super_block.number_of_files = 0;
-  super_block.number_of_users = 1;
-  super_block.nb_blocks_used = 0;
-  super_block.first_free_byte = SUPER_BLOCK_SIZE*BLOCK_SIZE + (INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE);
+int init_super_block(){
+  super_block_t *sb = malloc(sizeof(super_block_t));
+  sb->number_of_files = 0;
+  sb->number_of_users = 1;
+  sb->nb_blocks_used = 0;
+  sb->first_free_byte = SUPER_BLOCK_SIZE*BLOCK_SIZE + (INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE);
 
   fseek(virtual_disk_sos.storage, 0, SEEK_SET);
-  if(fwrite(&super_block, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
+  if(fwrite(sb, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
+    fprintf(stderr, "super block write problem\n");
+    return 1;
+  }
+  virtual_disk_sos.super_block = *sb;
+  return 0;
+}
+
+int write_super_block(){
+  fseek(virtual_disk_sos.storage, 0, SEEK_SET);
+  if(fwrite(&virtual_disk_sos.super_block, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "super block write problem\n");
     return 1;
   }

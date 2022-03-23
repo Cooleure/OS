@@ -19,6 +19,15 @@
   *
   * @Return 0 if an error occurs
   */
+int init_super_block();
+
+ /**
+  * @brief Writing the actual super block on disk OS
+  *
+  * @param OS disk
+  *
+  * @Return 0 if an error occurs
+  */
 int write_super_block();
 
 /**
