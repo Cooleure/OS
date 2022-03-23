@@ -36,7 +36,7 @@ int write_block (const block_t b, int pos){
 
   fseek(virtual_disk_sos.storage, pos*BLOCK_SIZE, SEEK_SET);
 
-  if(fwrite(&b, BLOCK_SIZE, 1, virtual_disk_sos.storage) != BLOCK_SIZE){
+  if(fwrite(&b, BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "block write problem\n");
     return 1;
   }
@@ -47,7 +47,7 @@ int read_block (block_t * block, int pos){
 
   fseek(virtual_disk_sos.storage, pos*BLOCK_SIZE, SEEK_SET);
 
-  if (fread(block, BLOCK_SIZE, 1, virtual_disk_sos.storage) != BLOCK_SIZE){
+  if (fread(block, BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "Block reading problem\n");
     return READ_FAILURE;
   }
