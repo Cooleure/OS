@@ -12,6 +12,9 @@
 #include "struct.h"
 #include "layer2.h"
 #include "layer1.h"
+#include <time.h>
+#include <stdio.h>
+#include <unistd.h>
 
 int init_super_block(){
   super_block_t *sb = malloc(sizeof(super_block_t));
@@ -82,4 +85,16 @@ int write_inodes_table(){
     return 0;
   }
   return 1;
+}
+
+inode_t init_inode(char* file, int size, uint pos){
+  inode_t* inode = malloc(INODE_SIZE);
+  inode->size = size;
+  inode->first_byte = pos;
+  inode->nblock = compute_nblock(size);
+  strcpy(inode->filename, file);
+  time_t timing = time(NULL);
+  strcpy(inode->ctimestamp, ctime(timing));
+   strcpy(inode->ctimestamp, ctime(timing));
+  return *inode;
 }
