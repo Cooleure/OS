@@ -16,11 +16,6 @@ int init_disk_sos(char* dirname){
   strcpy(tmp, dirname);
   strcat(tmp, "/d0");
   virtual_disk_sos.storage = fopen(tmp, "r+");
-  fseek(virtual_disk_sos.storage, 0, SEEK_END);
-  if(ftell(virtual_disk_sos.storage) == 0){
-    write_super_block();
-    write_inodes_table();
-  }
   if((read_super_block(&virtual_disk_sos.super_block)) == READ_FAILURE){
     free(tmp);
     return 0;

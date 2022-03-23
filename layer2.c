@@ -21,7 +21,7 @@ int write_super_block(){
   super_block.first_free_byte = SUPER_BLOCK_SIZE*BLOCK_SIZE + (INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE);
 
   fseek(virtual_disk_sos.storage, 0, SEEK_SET);
-  if(fwrite(&super_block, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != SUPER_BLOCK_SIZE*BLOCK_SIZE){
+  if(fwrite(&super_block, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "super block write problem\n");
     return 1;
   }
@@ -32,7 +32,7 @@ int read_super_block(super_block_t * super_block){
 
   fseek(virtual_disk_sos.storage, 0, SEEK_SET);
 
-  if (fread(super_block, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != SUPER_BLOCK_SIZE*BLOCK_SIZE){
+  if (fread(super_block, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "Block reading problem\n");
     return READ_FAILURE;
   }
@@ -57,7 +57,7 @@ void update_free_byte (int nbBlock, char sign, super_block_t * super_block){
 int read_inodes_table(inode_table_t * table){
   fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
 
-  if (fread(table, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage)){
+  if (fread(table, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "Inode table reading problem\n");
     return READ_FAILURE;
   }
@@ -67,7 +67,7 @@ int read_inodes_table(inode_table_t * table){
 int write_inodes_table(){
   fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
 
-  if (fwrite(virtual_disk_sos.inodes, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE){
+  if (fwrite(virtual_disk_sos.inodes, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "Inode writing problem\n");
     return 0;
   }
