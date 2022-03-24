@@ -87,14 +87,27 @@ int write_inodes_table(){
   return 1;
 }
 
-inode_t init_inode(char* file, int size, uint pos){
+int init_inode(char* file, int size, uint pos){
+  assert(virtual_disk_sos.super_block.number_of_files < 10);
+
   inode_t* inode = malloc(INODE_SIZE);
   inode->size = size;
   inode->first_byte = pos;
   inode->nblock = compute_nblock(size);
   strcpy(inode->filename, file);
+
   time_t timing = time(NULL);
   strcpy(inode->ctimestamp, ctime(timing));
-   strcpy(inode->ctimestamp, ctime(timing));
-  return *inode;
+  strcpy(inode->ctimestamp, ctime(timing));
+
+  //Ecriture de l'inode dans la table d'inode
+  fseek(virtual_disk_sos.storage, pos, SEEK_SET);
+  if(fwrite(inode, INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
+    fprintf(stderr, "Probleme d'ecriture de l'inode\n");
+    return 0;
+  }
+  //Stockage de l'inode dans la table d'inode et ecriture de cette table mise à jour
+  virtual_disk_sos.inodes[virtual_disk_sos.super_block.number_of_files++] = *inode;
+  int backup = write_inodes_table();
+  return backup;
 }

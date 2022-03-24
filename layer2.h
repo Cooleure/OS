@@ -75,6 +75,6 @@ void delete_inode(int i);
  *
  * @param file, size, pos
  */
-inode_t init_inode(char* file, int size, uint pos);
+int init_inode(char* file, int size, uint pos);
 
 #endif
