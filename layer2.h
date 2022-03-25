@@ -77,4 +77,11 @@ void delete_inode(int i);
  */
 int init_inode(char* file, int size, uint pos);
 
+/**
+ * @brief Get the unused inode index
+ * 
+ * @return int 
+ */
+int get_unused_inode();
+
 #endif
