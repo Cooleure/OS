@@ -32,7 +32,7 @@ int main(){
   if((virtual_disk_sos.storage = fopen(tmp, "r+"))){
     char answer;
     printf("Cette installation va remettre à zéro le disque virtuel, en êtes vous sûr ? (y/n) ");
-    scanf("%c", &answer);
+    scanf(" %c", &answer);
     if(answer != 'y') {
       printf("'%c'", answer);
       return 0;

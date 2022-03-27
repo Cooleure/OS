@@ -16,6 +16,7 @@ int init_disk_sos(char* dirname){
   strcpy(tmp, dirname);
   strcat(tmp, "/d0");
   virtual_disk_sos.storage = fopen(tmp, "r+");
+  
   //Initialisation du super block et de la table d'inode
   init_super_block();
   write_inodes_table();

@@ -92,15 +92,15 @@ int init_inode(char* file, int size, uint pos){
 
   //Recuperation du pointeur de la premiere inode dispo
   inode_t* inode = &virtual_disk_sos.inodes[virtual_disk_sos.super_block.number_of_files];
-  
+
   inode->size = size;
   inode->first_byte = pos;
   inode->nblock = compute_nblock(size);
   strcpy(inode->filename, file);
 
   time_t timing = time(NULL);
-  strcpy(inode->ctimestamp, ctime(timing));
-  strcpy(inode->ctimestamp, ctime(timing));
+  strcpy(inode->ctimestamp, ctime(&timing));
+  strcpy(inode->ctimestamp, ctime(&timing));
 
   //mise à jour du super block
   virtual_disk_sos.super_block.nb_blocks_used += inode->nblock;
