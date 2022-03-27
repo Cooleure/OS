@@ -6,6 +6,7 @@ layer2.o
 layer3.o
 layer4.o
 layer5.o
+user_interface.o
 main.o
 installer.o
 cmd_format.o
