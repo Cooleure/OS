@@ -1,3 +1,11 @@
+/**
+ * @file user_interface.c
+ * @author Florian Dion - Nicolas Dejean - Nathan Fleury
+ * @brief
+ * @version 0.1
+ * @date 2022-03-27
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

@@ -1,5 +1,5 @@
 /**
- * @file layer3.h
+ * @file user_interface.h
  * @author Florian Dion - Nicolas Dejean - Nathan Fleury
  * @brief
  * @version 0.1
