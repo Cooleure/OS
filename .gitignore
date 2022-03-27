@@ -8,3 +8,6 @@ layer5.o
 installer.o
 cmd_format.o
 osFromScratch.o
+installer
+osFromScratch
+cmd_format
