@@ -1,2 +1,10 @@
 
 Tests/d0
+layer1.o
+layer2.o
+layer3.o
+layer4.o
+layer5.o
+installer.o
+cmd_format.o
+osFromScratch.o
