@@ -23,6 +23,7 @@
 #define MAX_MSG 1024 // uchar
 #define TIMESTAMP_SIZE 24+2 // avec \0 et pour que ça tombe juste avec les blocs
 #define NB_USERS 5
+#define USER_MEM_SIZE FILENAME_MAX_SIZE + SHA256_BLOCK_SIZE*2 + 1
 
 #define BLOCK_SIZE 4 // octets
 #define SUPER_BLOCK_SIZE 4 // nb blocs

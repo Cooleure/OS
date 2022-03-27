@@ -21,7 +21,7 @@ int init_super_block(){
   sb->number_of_files = 0;
   sb->number_of_users = 1;
   sb->nb_blocks_used = 0;
-  sb->first_free_byte = SUPER_BLOCK_SIZE*BLOCK_SIZE + (INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE);
+  sb->first_free_byte = SUPER_BLOCK_SIZE*BLOCK_SIZE + (INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE) + (NB_USERS * USER_MEM_SIZE);
 
   fseek(virtual_disk_sos.storage, 0, SEEK_SET);
   if(fwrite(sb, SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){

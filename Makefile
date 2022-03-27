@@ -16,7 +16,7 @@ sources=$(wildcard *.c)
 %.o: %.c
 	gcc -c $(CFLAGS) $*.c -o $*.o
 
-osFromScratch: layer1.o layer2.o main.o
+osFromScratch: layer1.o layer2.o main.o user_interface.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 cmd_format: cmd_format.o
