@@ -3,14 +3,22 @@
 TARGETS=cmd_format installer osFromScratch
 INSTALLER=installer
 
+CC=gcc
+CFLAGS=-Wall -std=c99
+sources=$(wildcard *.c)
+
+ifeq ($(DEBUG),yes)
+	CFLAGS += -g
+	LDFLAGS +=
+else
+	CFLAGS += -O3 -DNDEBUG
+	LDFLAGS +=
+endif
+
 all: $(TARGETS)
 
 clean:
 	@rm -f *.o *~ $(TARGETS) *.d
-
-CC=gcc
-CFLAGS=-Wall -std=c99
-sources=$(wildcard *.c)
 
 # compile
 %.o: %.c

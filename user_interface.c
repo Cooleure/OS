@@ -42,7 +42,7 @@ void dumpHelp(){
   printf("╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n");
   printf("》Menu d'aide:《\n");
   printf("\n");
-  printf(" ⌨ stop     ➪ poweroff OS\n");
+  printf(" ⌨ quit     ➪ poweroff OS\n");
   printf(" ⌨ ls       ➪ list files\n");
   printf(" ⌨ user     ➪ user help menu\n");
   printf("╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n");

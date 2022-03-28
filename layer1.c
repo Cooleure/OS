@@ -12,11 +12,11 @@
 virtual_disk_t virtual_disk_sos;
 
 int init_disk_sos(char* dirname){
-  char *tmp = malloc(sizeof(char));
+  char *tmp = malloc(sizeof(char)*(strlen(dirname)+strlen("/d0"))+1);
   strcpy(tmp, dirname);
   strcat(tmp, "/d0");
   virtual_disk_sos.storage = fopen(tmp, "r+");
-  
+
   //Initialisation du super block et de la table d'inode
   init_super_block();
   write_inodes_table();

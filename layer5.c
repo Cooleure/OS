@@ -11,46 +11,63 @@
 #include "layer5.h"
 #include "user_interface.h"
 
+#define _CRTDBG_MAP_ALLOC
+
 void dumpCommand(command *cmd){
   for(int i = 0; i < cmd->argc; i++){
     printf("%s\n", cmd->args[i]);
   }
 }
 
-command *createCommand(char *strCmd){
-  command *cmd = malloc(strlen(strCmd)+1);
+command *createCommand(char *input){
+    char splitChar = ' ';
+    int inputLen = (int) strlen(input);
 
-  if(strlen(strCmd) == 0){
+    int numberOfArguments = 1;
+
+    for (int i = 0; i < inputLen; i++)
+    {
+        if (input[i] == splitChar)
+            numberOfArguments++;
+    }
+    size_t totalSize = sizeof(numberOfArguments);
+    command *cmd = malloc(sizeof(command));
     cmd->argc = 0;
+    cmd->args = malloc(sizeof(char *) * numberOfArguments);
+
+    int startOfArg = 0;
+    int outputIndex = 0;
+
+    for (int i = 0; i < inputLen; i++)
+    {
+        if (input[i] == splitChar)
+        {
+            int argLen = i - startOfArg;
+            totalSize+=(argLen+1)*sizeof(char);
+            cmd->args[outputIndex] = malloc(sizeof(char) * argLen + 1);
+            strncpy(cmd->args[outputIndex], input + startOfArg, argLen);
+            cmd->args[outputIndex][argLen] = 0;
+
+            startOfArg = i + 1;
+            outputIndex++;
+        }
+    }
+
+    // append the last argument
+    int argLen = inputLen - startOfArg;
+    totalSize+=(argLen+1)*sizeof(char);
+    cmd->args[outputIndex] = malloc(sizeof(char) * argLen + 1);
+    strncpy(cmd->args[outputIndex], input + startOfArg, argLen);
+    cmd->args[outputIndex][argLen] = 0;
+
+    cmd->argc = numberOfArguments;
     return cmd;
-  }
-  int argc = 0;
-  int iStr = 0;
-  char c;
-  while((c = strCmd[iStr++]) != '\0'){
-    //New argument
-    int i = 0;
-    char arg[50];
-    //Construct the argument
-    while(c != ' ' && c != '\0'){
-      arg[i++] = c;
-      c = strCmd[iStr++];
-    }
-    if(i>0){
-      arg[i] = '\0';
-      strcpy(cmd->args[argc], arg);
-      printf("added word %s at %d\n", cmd->args[argc], argc);
-      argc++;
-    }
-  }
-  cmd->argc = argc;
-  return cmd;
 }
 
 int performCommand(command *cmd){
   if(cmd->argc == 0) return 1;
   if(cmd->argc == 1){
-    if(strcmp(cmd->args[0],"stop") == 0) return 1;
+    if(strcmp(cmd->args[0],"quit") == 0) return 1;
     if(strcmp(cmd->args[0],"ls") == 0){
       //ls code
     }
@@ -79,25 +96,33 @@ int performCommand(command *cmd){
   return 0;
 }
 
+void freeCommand(command *cmd){
+  for(int i = 0; i < cmd->argc; i++){
+    free(cmd->args[i]);
+  }
+  free(cmd->args);
+}
+
 int console(){
   int exit = 0;
   char *login = "root";
+  command *cmd;
+  char *strCmd = malloc(sizeof(char)*75);
 
   clearConsole();
   dumpLogo();
   dumpHelp();
   while(!exit){
-    char *strCmd = malloc(sizeof(char)*75);
     printf("%s ➣ ",login);
     fgets(strCmd, 75, stdin);
     strCmd[strcspn(strCmd, "\n")] = 0; //remove \n at end
 
     //Construct command
-    command *cmd = createCommand(strCmd);
-    dumpCommand(cmd);
+    cmd = createCommand(strCmd);
     exit = performCommand(cmd);
+    freeCommand(cmd);
     free(cmd);
-    free(strCmd);
   }
+  free(strCmd);
   return 0;
 }
