@@ -11,6 +11,11 @@
 #include "layer1.h"
 #include "layer2.h"
 #include "struct.h"
+#include "sha256_utils.h"
+#include "sha256.h"
+
+#define ROOT_UID 0
+#define PASSWORD_SIZE 15
 
 int init_user_table();
 int load_user_table();
