@@ -22,12 +22,7 @@ int init_super_block(){
   virtual_disk_sos.super_block.nb_blocks_used = 0;
   virtual_disk_sos.super_block.first_free_byte = SUPER_BLOCK_SIZE*BLOCK_SIZE + (INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE) + (NB_USERS * USER_MEM_SIZE);
 
-  fseek(virtual_disk_sos.storage, 0, SEEK_SET);
-  if(fwrite(&(virtual_disk_sos.super_block), SUPER_BLOCK_SIZE*BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
-    fprintf(stderr, "super block write problem\n");
-    return 1;
-  }
-  return 0;
+  return write_super_block();
 }
 
 int write_super_block(){
@@ -86,6 +81,10 @@ int write_inodes_table(){
 }
 
 int init_inode(char* file, int size, uint pos){
+  if (virtual_disk_sos.super_block.number_of_files== 10){
+    //Table d'inode pleine
+    return 0;
+  }
   assert(virtual_disk_sos.super_block.number_of_files < 10);
 
   //Recuperation du pointeur de la premiere inode dispo
@@ -98,7 +97,7 @@ int init_inode(char* file, int size, uint pos){
 
   time_t timing = time(NULL);
   strcpy(inode->ctimestamp, ctime(&timing));
-  strcpy(inode->ctimestamp, ctime(&timing));
+  strcpy(inode->mtimestamp, ctime(&timing));
 
   //mise à jour du super block
   virtual_disk_sos.super_block.nb_blocks_used += inode->nblock;
