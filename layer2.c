@@ -88,7 +88,7 @@ int init_inode(char* file, int size, uint pos){
   assert(virtual_disk_sos.super_block.number_of_files < 10);
 
   //Recuperation du pointeur de la premiere inode dispo
-  inode_t* inode = &virtual_disk_sos.inodes[virtual_disk_sos.super_block.number_of_files];
+  inode_t* inode = &virtual_disk_sos.inodes[get_unused_inode()];
 
   inode->size = size;
   inode->first_byte = pos;

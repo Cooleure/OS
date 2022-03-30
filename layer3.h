@@ -20,6 +20,7 @@
 int init_user_table();
 int load_user_table();
 int new_user(char login[FILENAME_MAX_SIZE], char passwd[SHA256_BLOCK_SIZE*2 + 1]);
+int write_user_table();
 int delete_user(char login[FILENAME_MAX_SIZE]);
 
 #endif

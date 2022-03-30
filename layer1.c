@@ -20,16 +20,14 @@ int init_disk_sos(char* dirname){
   //Initialisation du super block et de la table d'inode
   init_super_block();
   write_inodes_table();
+  free(tmp);
 
   if((read_super_block(&virtual_disk_sos.super_block)) == READ_FAILURE){
-    free(tmp);
     return 0;
   }
   if((read_inodes_table(&virtual_disk_sos.inodes)) == READ_FAILURE){
-    free(tmp);
     return 0;
   }
-  free(tmp);
   return 1;
 }
 
