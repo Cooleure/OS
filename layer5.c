@@ -8,10 +8,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "layer1.h"
 #include "layer5.h"
 #include "user_interface.h"
-
-#define _CRTDBG_MAP_ALLOC
+#include "struct.h"
 
 void dumpCommand(command *cmd){
   for(int i = 0; i < cmd->argc; i++){
@@ -64,43 +64,66 @@ command *createCommand(char *input){
     return cmd;
 }
 
-int performCommand(command *cmd){
-  if(cmd->argc == 0) return 1;
-  if(cmd->argc == 1){
-    if(strcmp(cmd->args[0],"quit") == 0) return 1;
-    if(strcmp(cmd->args[0],"ls") == 0){
-      //ls code
-    }
-  }
-  if(strcmp(cmd->args[0],"user") == 0){
-    if(cmd->argc == 1){
-      clearConsole();
-      dumpUserHelp();
-    }else{
-      if(cmd->argc == 2){
-        if(strcmp(cmd->args[1],"list")){
-          //List users
-        }
-      }else if(cmd->argc == 3) {
-        if(strcmp(cmd->args[3],"create")){
-          //create user
-        }else if(strcmp(cmd->args[3],"remove")){
-          //remove user
-        }else if(strcmp(cmd->args[3],"login")){
-          //login user
-        }
-      }
-
-    }
-  }
-  return 0;
-}
-
 void freeCommand(command *cmd){
   for(int i = 0; i < cmd->argc; i++){
     free(cmd->args[i]);
   }
   free(cmd->args);
+}
+
+void ls(int lOption){
+  italic("Current files:\n");
+  if(!lOption){
+    printf("%-*s | Size (Bytes)\n", FILENAME_MAX_SIZE, "FileName");
+    for(int i = 0; i<FILENAME_MAX_SIZE+15; i++){
+      printf("―");
+    }
+    printf("\n");
+    for(int i = 0; i<virtual_disk_sos.super_block.number_of_files; i++){
+      inode_t inode = virtual_disk_sos.inodes[i];
+      printf("%-*s | %7d\n", FILENAME_MAX_SIZE, inode.filename, inode.size);
+    }
+  }else{
+    for(int i = 0; i<40; i++){
+      printf("―");
+    }
+    printf("\n");
+    for(int i = 0; i<virtual_disk_sos.super_block.number_of_files; i++){
+      inode_t inode = virtual_disk_sos.inodes[i];
+      printf("| ◉ File name     ▶ %s\n", inode.filename);
+      printf("| ◉ Size          ▶ %d (Bytes)\n", inode.size);
+      printf("| ◉ Owner id      ▶ %d\n", inode.uid);
+      printf("| ◉ Owner rights  ▶ %d\n", inode.uright);
+      printf("| ◉ User rights   ▶ %d\n", inode.oright);
+      printf("| ◉ Create date   ▶ %s", inode.ctimestamp);
+      printf("| ◉ Last update   ▶ %s", inode.mtimestamp);
+      printf("| ◉ Block count   ▶ %d\n", inode.nblock);
+      printf("| ◉ First byte    ▶ %d\n", inode.first_byte);
+    }
+    for(int i = 0; i<40; i++){
+      printf("―");
+    }
+    printf("\n");
+  }
+}
+
+int performCommand(command *cmd){
+  if(cmd->argc == 0) return 1;
+  if(!strcmp(cmd->args[0], "ls")){
+    if(cmd->argc == 1){
+      ls(0);
+      return 0;
+    }
+    else if(cmd->argc == 2 && !strcmp(cmd->args[1], "-l")){
+      ls(1);
+      return 0;
+    }
+  }
+  if(!strcmp(cmd->args[0], "quit")){
+    return 1;
+  }
+  commandUsage(cmd->args[0]);
+  return 0;
 }
 
 int console(){

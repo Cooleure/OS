@@ -8,6 +8,10 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 
+/**
+ * @brief Make strings italic using Regex
+ */
+void italic(char* msg);
 
 /**
  * @brief Clears the console using Regex
@@ -25,8 +29,8 @@ void dumpLogo();
 void dumpHelp();
 
 /**
- * @brief Print users's help menu
+ * @brief Print command usage
  */
-void dumpUserHelp();
+void commandUsage(char* cmd);
 
 #endif

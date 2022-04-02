@@ -26,7 +26,7 @@ int main(){
   printf("Indiquez le répertoire dans lequel installer le système: ");
   char * dirName = malloc(sizeof(char));
   scanf("%s", dirName);
-  char *tmp = malloc(sizeof(char));
+  char *tmp = malloc(sizeof(char)*strlen(dirName) + 4);
   strcpy(tmp, dirName);
   strcat(tmp, "/d0");
   if((virtual_disk_sos.storage = fopen(tmp, "r+"))){
@@ -40,6 +40,7 @@ int main(){
   }else{
     if((virtual_disk_sos.storage = fopen(tmp, "w+")) == NULL) exit(0);
   }
+  free(tmp);
   int diskSize;
   printf("Quelle taille souhaitez vous allouer à votre OS ?: ");
   scanf("%d", &diskSize);

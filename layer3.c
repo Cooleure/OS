@@ -1,12 +1,12 @@
 /**
  * @file layer3.c
  * @author Florian Dion - Nicolas Dejean - Nathan Fleury
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2022-03-28
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
+ *
  */
 
 #include <stdio.h>
@@ -20,7 +20,7 @@ int init_user_table(){
     strcpy(virtual_disk_sos.users_table[ROOT_UID].login, "root");
 
     //Initialisation du mot de passe
-	char hashRes[SHA256_BLOCK_SIZE*2 + 1];
+	 char hashRes[SHA256_BLOCK_SIZE*2 + 1];
 
     printf("Mot de passe utilisateur : ");
     char mdp[PASSWORD_SIZE];
