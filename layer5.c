@@ -9,9 +9,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include "layer1.h"
+#include "layer3.h"
 #include "layer5.h"
 #include "user_interface.h"
 #include "struct.h"
+#include "sha256_utils.h"
 
 void dumpCommand(command *cmd){
   for(int i = 0; i < cmd->argc; i++){
@@ -93,9 +95,11 @@ void ls(int lOption){
       printf("| ◉ File name     ▶ %s\n", inode.filename);
       printf("| ◉ Size          ▶ %d (Bytes)\n", inode.size);
       printf("| ◉ Owner id      ▶ %d\n", inode.uid);
-      printf("| ◉ Owner rights  ▶ %d\n", inode.uright);
-      printf("| ◉ User rights   ▶ %d\n", inode.oright);
-      printf("| ◉ Create date   ▶ %s", inode.ctimestamp);
+      printf("| ◉ Owner rights  ▶ ");
+      printRights(inode.uright);
+      printf("\n| ◉ User rights   ▶ ");
+      printRights(inode.oright);
+      printf("\n| ◉ Create date   ▶ %s", inode.ctimestamp);
       printf("| ◉ Last update   ▶ %s", inode.mtimestamp);
       printf("| ◉ Block count   ▶ %d\n", inode.nblock);
       printf("| ◉ First byte    ▶ %d\n", inode.first_byte);
@@ -126,14 +130,34 @@ int performCommand(command *cmd){
   return 0;
 }
 
+int login(){
+  int tries = 0;
+  char password[PASSWORD_SIZE+1];
+  char hashRes[SHA256_BLOCK_SIZE*2 + 1];
+  clearConsole();
+  dumpLogo();
+  printf("Login to root: ");
+  while(tries < 3){
+    fgets(password, PASSWORD_SIZE, stdin);
+    password[strcspn(password, "\n")] = 0;
+    sha256ofString((BYTE *)password,hashRes);
+    if(strcmp(hashRes, virtual_disk_sos.users_table[ROOT_UID].passwd)==0){
+      printf("Login success !\n");
+      return 1;
+    }
+    tries++;
+    if(tries<3)printf("Wrong password, try again: ");
+  }
+  printf("Max tries reached... Aborting system launch\n");
+  return 0;
+}
+
 int console(){
   int exit = 0;
   char *login = "root";
   command *cmd;
   char *strCmd = malloc(sizeof(char)*75);
 
-  clearConsole();
-  dumpLogo();
   dumpHelp();
   while(!exit){
     printf("%s ➣ ",login);

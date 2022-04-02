@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "layer1.h"
 #include "layer2.h"
+#include "layer3.h"
 #include "struct.h"
 
 virtual_disk_t virtual_disk_sos;
@@ -16,11 +17,12 @@ int init_disk_sos(char* dirname){
   strcpy(tmp, dirname);
   strcat(tmp, "/d0");
   virtual_disk_sos.storage = fopen(tmp, "r+");
+  free(tmp);
 
   //Initialisation du super block et de la table d'inode
   init_super_block();
   write_inodes_table();
-  free(tmp);
+  load_user_table();
 
   if((read_super_block(&virtual_disk_sos.super_block)) == READ_FAILURE){
     return 0;

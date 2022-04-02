@@ -13,8 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "layer3.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "sha256_utils.h"
 
 int init_user_table(){
     strcpy(virtual_disk_sos.users_table[ROOT_UID].login, "root");
@@ -22,15 +21,15 @@ int init_user_table(){
     //Initialisation du mot de passe
 	 char hashRes[SHA256_BLOCK_SIZE*2 + 1];
 
-    printf("Mot de passe utilisateur : ");
-    char mdp[PASSWORD_SIZE];
-    scanf("%s", mdp);
+    printf("Définir un mot de passe utilisateur: ");
+    char mdp[PASSWORD_SIZE+1];
+    fgets(mdp, PASSWORD_SIZE, stdin);
+    mdp[strcspn(mdp, "\n")] = 0;
     sha256ofString((BYTE *)mdp,hashRes);
     strcpy(virtual_disk_sos.users_table[ROOT_UID].passwd, hashRes);
 
     //Ecriture de la table dans le disque (apres la table d'inodes)
-    int retour = write_user_table();
-    return retour;
+    return write_user_table();
 }
 
 
@@ -54,6 +53,7 @@ int new_user(char login[FILENAME_MAX_SIZE], char passwd[SHA256_BLOCK_SIZE*2 + 1]
     strcpy(user->login, login);
     strcpy(user->passwd, passwd);
     virtual_disk_sos.super_block.number_of_users++;
+    return 1;
 }
 
 int write_user_table(){
@@ -74,4 +74,5 @@ int delete_user(char login[FILENAME_MAX_SIZE]){
         }
         i++;
     }
+    return 1;
 }

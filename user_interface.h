@@ -33,4 +33,6 @@ void dumpHelp();
  */
 void commandUsage(char* cmd);
 
+void printRights(unsigned int r);
+
 #endif

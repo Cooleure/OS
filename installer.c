@@ -2,6 +2,7 @@
 
 #include "layer1.h"
 #include "layer2.h"
+#include "layer3.h"
 #include "struct.h"
 
 // create a file named di (i = diskid) in directory dirname of size bytes
@@ -16,8 +17,7 @@ void format(char *dirname, int size, int diskid){
   assert(fp!=NULL);
   unsigned char zero=0;
   for(int i=0; i<size; i++) {
-    int nb_write = fwrite(&zero, 1, 1, fp);
-    assert(nb_write == 1);
+    fwrite(&zero, 1, 1, fp);
   }
   fclose(fp);
 }
@@ -49,6 +49,9 @@ int main(){
   scanf("%d", &diskId);
   format(dirName, diskSize, diskId);
   init_super_block();
+  printf("Initialisation de l'utilisateur root...\n");
+  while (getchar() != '\n');
+  init_user_table();
   write_inodes_table();
   return 0;
 }

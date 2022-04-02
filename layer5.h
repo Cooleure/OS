@@ -14,6 +14,7 @@ typedef struct s_command{
 } command;
 
 int console();
+int login();
 
 
 #endif

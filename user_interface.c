@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "user_interface.h"
+#include "struct.h"
 
 //https://askubuntu.com/questions/528928/how-to-do-underline-bold-italic-strikethrough-color-background-and-size-i
 void italic(char* msg){
@@ -61,4 +62,14 @@ void dumpHelp(){
 
 void commandUsage(char* cmd){
   if(strcmp(cmd, "ls")==0) printf("Usage: ls [-l]\n");
+}
+
+void printRights(unsigned int r){
+  switch (r) {
+    case rw: printf("rw"); break;
+    case rW: printf("rW"); break;
+    case Rw: printf("Rw"); break;
+    case RW: printf("RW"); break;
+    default: break;
+  }
 }
