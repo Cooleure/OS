@@ -53,7 +53,7 @@ int new_user(char login[FILENAME_MAX_SIZE], char passwd[SHA256_BLOCK_SIZE*2 + 1]
     strcpy(user->login, login);
     strcpy(user->passwd, passwd);
     virtual_disk_sos.super_block.number_of_users++;
-    return 1;
+    return write_user_table();
 }
 
 int write_user_table(){
@@ -68,9 +68,14 @@ int write_user_table(){
 
 int delete_user(char login[FILENAME_MAX_SIZE]){
     int i=0;
+    //Dernier utilisateur dans le tableau
+    user_t user = virtual_disk_sos.users_table[virtual_disk_sos.super_block.number_of_users-1];
     while(i<virtual_disk_sos.super_block.number_of_users){
         if(strcmp(login, virtual_disk_sos.users_table[i].login)){
-
+            //remplacement de l'utilisateur
+            virtual_disk_sos.users_table[i] = user;
+            virtual_disk_sos.super_block.number_of_users--;
+            write_user_table();
         }
         i++;
     }
