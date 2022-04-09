@@ -80,6 +80,18 @@ int write_inodes_table(){
   return 1;
 }
 
+void delete_inode(int i){
+  //Derniere inode de la table
+  inode_t inode = virtual_disk_sos.inodes[get_unused_inode()-1];
+
+  virtual_disk_sos.inodes[i] = inode;
+  virtual_disk_sos.inodes[get_unused_inode()-1].first_byte = 0;
+  virtual_disk_sos.super_block.number_of_files--;
+
+  //Actualisation de la table dans le disque
+  write_inodes_table();
+}
+
 int init_inode(char* file, int size, uint pos){
   if (virtual_disk_sos.super_block.number_of_files== 10){
     //Table d'inode pleine
