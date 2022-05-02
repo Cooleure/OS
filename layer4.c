@@ -20,7 +20,7 @@ int existing_file(inode_table_t *inode_table, char *filename) {
 	for (int i = 0; i < INODE_TABLE_SIZE; i++)
 		if (strcmp(inode_table[i] -> filename, filename) == 0)
 			return i; // Exists
-	return 0; // Does not exist
+	return -1; // Does not exist
 }
 
 int write_file(char *filename, file_t *file) {
@@ -51,7 +51,6 @@ int write_file(char *filename, file_t *file) {
 		fprintf(stderr, "Read inodes table problem\n");
 		return 0;
 	}
-
 	return 1;
 }
 
@@ -78,7 +77,6 @@ int read_file(char *filename, file_t *file) {
 		fprintf(stderr, "Read inodes table problem\n");
 		return 0;
 	}
-
 	return 1;
 }
 
@@ -97,7 +95,6 @@ int delete_file(char *filename) {
 		fprintf(stderr, "Read inodes table problem\n");
 		return 0;
 	}
-
 	return 1;
 }
 
