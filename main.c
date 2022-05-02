@@ -9,6 +9,7 @@
 int main(){
   init_disk_sos("Tests");
   //ecriture d'une inode dans la table d'inode et positionnement du premier byte à first_free_byte (pos)
+  printf("%s\n", virtual_disk_sos.inodes[0].filename);
   init_inode("fichier1", 1000, virtual_disk_sos.super_block.first_free_byte);
   if(login())console();
   switch_off();
