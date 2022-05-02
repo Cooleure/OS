@@ -21,7 +21,10 @@ int init_disk_sos(char* dirname){
 
   //Initialisation du super block et de la table d'inode
   init_super_block();
-  write_inodes_table();
+  printf("%d\n", virtual_disk_sos.super_block.first_free_byte);
+  read_inodes_table(&virtual_disk_sos.inodes);
+  printf("%s\n", virtual_disk_sos.inodes[0].filename);
+  printf("%d\n", virtual_disk_sos.super_block.first_free_byte);
   load_user_table();
 
   if((read_super_block(&virtual_disk_sos.super_block)) == READ_FAILURE){
