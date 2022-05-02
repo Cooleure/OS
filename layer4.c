@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "layer4.h"
 #include "struct.h"
 
@@ -27,7 +29,7 @@ int write_file(char *filename, file_t *file) {
 	inode_table_t *inode_table;
 	if (read_inodes_table(inode_table)) {
 		int fileIndex = existing_file(inode_table, filename);
-		if (fileIndex) {
+		if (fileIndex >= 0) {
 			if (file -> size <= inode_table[fileIndex] -> size) {
 				// Modification de l'inode (à mettre dans une fonction update_inode() ?)
 				inode_table[fileIndex] -> size = file -> size;
@@ -58,7 +60,7 @@ int read_file(char *filename, file_t *file) {
 	inode_table_t *inode_table;
 	if (read_inodes_table(inode_table)) {
 		int fileIndex = existing_file(inode_table, filename);
-		if (fileIndex) {
+		if (fileIndex >= 0) {
 			// Lecture du fichier
 			fseek(virtual_disk_sos.storage, inode_table[fileIndex] -> first_byte, SEEK_SET);
 
@@ -99,9 +101,49 @@ int delete_file(char *filename) {
 }
 
 int load_file_from_host(char *filename) {
-	return 1;
+	// Ouverture du fichier de host
+	FILE *idFile;
+	idFile = fopen(filename, "r");
+	if (idFile == NULL)
+	{
+		perror(filename);
+		return 0;
+	}
+
+	// Création du fichier de OsFromScratch
+	file_t file;
+
+	struct stat infos;
+	if (fstat(idFile, &infos) == -1) {
+		fprintf(stderr, "Read stats file problem\n");
+		return 0;
+	}
+
+	file.size = infos.st_size;
+	if (file.size > MAX_FILE_SIZE) file.size = MAX_FILE_SIZE;
+
+	if (fread(file.data[MAX_FILE_SIZE], file.size, 1, idFile) != 1) {
+		fprintf(stderr, "Data file reading problem\n");
+		return 0;
+	}
+
+	// Ecriture sur le disque
+	return write_file(filename, &file);
 }
 
 int store_file_to_host(char *filename) {
+	FILE *idFile = fopen(filename, "w");
+
+	file_t file;
+	if (read_file(filename, &file) == 0) {
+		fprintf(stderr, "File reading on system problem\n");
+		return 0;
+	}
+
+	if (fwrite(file.data, 1, file.size, idFile) == 0) {
+		fprintf(stderr, "Data file writing problem\n");
+		return 0;
+	}
+
 	return 1;
 }
