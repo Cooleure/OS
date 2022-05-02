@@ -62,11 +62,16 @@ void update_free_byte (int nbBlock, char sign, super_block_t * super_block){
 
 int read_inodes_table(inode_table_t * table){
   fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
-  int size;
 
-  if (size = fread(table, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
+  if (fread(table, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "Inode table reading problem\n");
     return READ_FAILURE;
+  }
+  int i = 0;
+  int size = 0;
+  while(table[i]->size != 0){
+    size+= table[i]->size;
+    i++;
   }
   int nbblocs = compute_nblock(size);
   update_free_byte(nbblocs, '+', &(virtual_disk_sos.super_block));
