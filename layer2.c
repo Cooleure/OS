@@ -117,8 +117,7 @@ int init_inode(char* file, int size, uint pos){
   virtual_disk_sos.super_block.number_of_files++;
 
   //Ecriture de cette table mise à jour
-  int backup = write_inodes_table();
-  return backup;
+  return write_inodes_table();
 }
 
 int get_unused_inode(){
