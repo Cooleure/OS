@@ -31,7 +31,7 @@ int init_disk_sos(char* dirname){
 }
 
 int compute_nblock(const int size){
-  return ceil(size/BLOCK_SIZE); //Arrondi par excès
+  return ceil(size/BLOCK_SIZE)+1; //Arrondi par excès
 }
 
 int write_block (const block_t b, int pos){
@@ -69,6 +69,7 @@ void print_block (const block_t b){
 
 int switch_off (){
 
+  write_super_block();
   if (fclose(virtual_disk_sos.storage) == EOF){
     fprintf(stderr, "vdisk closing problem");
     return 1;

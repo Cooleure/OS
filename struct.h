@@ -17,19 +17,27 @@
 #define RW 3 // 11
 #define ROOT_UID 0
 
+//Miscelaneous
 #define FILENAME_MAX_SIZE 32 // nb max de caractères des noms de fichiers
 #define MAX_FILE_SIZE (2*1024) // taille max d'un fichier (uchar)
-#define INODE_TABLE_SIZE 10 // taille fixe = nb max de fichiers dans le SE
 #define MAX_MSG 1024 // uchar
-#define TIMESTAMP_SIZE 24+2 // avec \0 et pour que ça tombe juste avec les blocs
-#define NB_USERS 5
-#define USER_MEM_SIZE FILENAME_MAX_SIZE + SHA256_BLOCK_SIZE*2 + 1
+#define TIMESTAMP_SIZE (24+2) // avec \0 et pour que ça tombe juste avec les blocs
 
+//User section
+#define NB_USERS 5
+#define USER_MEM_SIZE (FILENAME_MAX_SIZE + SHA256_BLOCK_SIZE*2 + 1)
+
+//Block / superblock / inode section
 #define BLOCK_SIZE 4 // octets
 #define SUPER_BLOCK_SIZE 4 // nb blocs
-#define INODES_START SUPER_BLOCK_SIZE*BLOCK_SIZE+1 // en octets
-#define INODE_SIZE FILENAME_MAX_SIZE/BLOCK_SIZE+6+(TIMESTAMP_SIZE*2)/BLOCK_SIZE
+#define INODE_SIZE (FILENAME_MAX_SIZE/BLOCK_SIZE+6+(TIMESTAMP_SIZE*2)/BLOCK_SIZE)
 //= 27 en blocs = 8 blocs de filename+6 uint+timestamps
+#define INODE_TABLE_SIZE 10 // taille fixe = nb max de fichiers dans le SE
+
+//Mem start section
+#define INODES_START SUPER_BLOCK_SIZE*BLOCK_SIZE+1 // en octets
+#define USER_START INODES_START + INODE_TABLE_SIZE * (INODE_SIZE  * BLOCK_SIZE)//Where user table is stored (start)
+#define DATA_START USER_START + NB_USERS * USER_MEM_SIZE //Where blocks are stored
 
 typedef unsigned int uint; // même taille que int
 typedef unsigned char uchar; // 8 bits non signés = octet

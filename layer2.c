@@ -68,22 +68,26 @@ int read_inodes_table(inode_table_t * table){
     return READ_FAILURE;
   }
   int i = 0;
-  int size = 0;
+  int nblocks = 0;
   while(table[i]->size != 0){
-    size+= table[i]->size;
+    nblocks+= table[i]->nblock;
     i++;
   }
-  int nbblocs = compute_nblock(size);
-  update_free_byte(nbblocs, '+', &(virtual_disk_sos.super_block));
+  update_free_byte(nblocks, '+', &(virtual_disk_sos.super_block));
   return 1;
 }
 
 int write_inodes_table(){
   fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
 
-  if (fwrite(virtual_disk_sos.inodes, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
-    fprintf(stderr, "Inode writing problem\n");
-    return 0;
+  for(int i = 0; i < INODE_TABLE_SIZE; i++){
+    if(virtual_disk_sos.inodes[i].size>0){
+      printf("Inode %d inode size: %d\n", i, INODE_SIZE);
+      if (fwrite(&(virtual_disk_sos.inodes[i]), INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
+        fprintf(stderr, "Inode writing problem\n");
+        return 0;
+      }
+    }
   }
   return 1;
 }
@@ -109,6 +113,7 @@ int init_inode(char* file, int size, uint pos){
 
   //Recuperation du pointeur de la premiere inode dispo
   inode_t* inode = &virtual_disk_sos.inodes[get_unused_inode()];
+  printf("%d\n", get_unused_inode());
 
   inode->size = size;
   inode->first_byte = pos;
@@ -129,5 +134,10 @@ int init_inode(char* file, int size, uint pos){
 }
 
 int get_unused_inode(){
+  for(int i = 0; i < INODE_TABLE_SIZE; i++){
+    if(virtual_disk_sos.inodes[i].size <= 0){
+      return i;
+    }
+  }
   return virtual_disk_sos.super_block.number_of_files;
 }

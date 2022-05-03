@@ -103,11 +103,11 @@ void ls(int lOption){
       printf("| ◉ Last update   ▶ %s", inode.mtimestamp);
       printf("| ◉ Block count   ▶ %d\n", inode.nblock);
       printf("| ◉ First byte    ▶ %d\n", inode.first_byte);
+      for(int i = 0; i<40; i++){
+        printf("―");
+      }
+      printf("\n");
     }
-    for(int i = 0; i<40; i++){
-      printf("―");
-    }
-    printf("\n");
   }
 }
 

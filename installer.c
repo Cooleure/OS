@@ -52,6 +52,5 @@ int main(){
   printf("Initialisation de l'utilisateur root...\n");
   while (getchar() != '\n');
   init_user_table();
-  write_inodes_table();
   return 0;
 }

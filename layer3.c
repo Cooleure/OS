@@ -35,7 +35,7 @@ int init_user_table(){
 
 int load_user_table(){
     //Positionnement dans le disque
-    fseek(virtual_disk_sos.storage, INODES_START + INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE + 1, SEEK_SET);
+    fseek(virtual_disk_sos.storage, USER_START, SEEK_SET);
 
     //Lecture
     if(fread(virtual_disk_sos.users_table, USER_MEM_SIZE * NB_USERS, 1, virtual_disk_sos.storage) != 1){
@@ -57,7 +57,7 @@ int new_user(char login[FILENAME_MAX_SIZE], char passwd[SHA256_BLOCK_SIZE*2 + 1]
 }
 
 int write_user_table(){
-    fseek(virtual_disk_sos.storage, INODES_START + INODE_TABLE_SIZE*INODE_SIZE*BLOCK_SIZE + 1, SEEK_SET);
+    fseek(virtual_disk_sos.storage, USER_START, SEEK_SET);
 
     if(fwrite(virtual_disk_sos.users_table, USER_MEM_SIZE * NB_USERS, 1,virtual_disk_sos.storage) != 1){
         fprintf(stderr, "users table writing problem\n");
