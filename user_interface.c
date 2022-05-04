@@ -45,6 +45,7 @@ void dumpHelp(){
   printf("\n");
   italic("[] -> optional   <> -> required\n");
   printf(" ⌨ quit                             ➪ poweroff OS\n");
+  printf(" ⌨ help                             ➪ display this help menu\n");
   printf(" ⌨ ls [-l]                          ➪ list files\n");
   printf(" ⌨ cat <file_name>                  ➪ dump file content\n");
   printf(" ⌨ rm <file_name>                   ➪ remove a file\n");
@@ -62,6 +63,7 @@ void dumpHelp(){
 
 void commandUsage(char* cmd){
   if(!strcmp(cmd, "ls")) printf("Usage: ls [-l]\n");
+  if(!strcmp(cmd, "cr")) printf("Usage: cr <file_name>\n");
 }
 
 void printRights(unsigned int r){

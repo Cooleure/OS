@@ -106,6 +106,7 @@ void ls(int lOption){
         printf("| ◉ Last update   ▶ %s", inode.mtimestamp);
         printf("| ◉ Block count   ▶ %d\n", inode.nblock);
         printf("| ◉ First byte    ▶ %d\n", inode.first_byte);
+        printf("| ◉ Inode id    ▶ %d\n", i);
         for(int i = 0; i<40; i++){
           printf("―");
         }
@@ -117,6 +118,16 @@ void ls(int lOption){
 
 void cr(char *fileName){
   init_inode(fileName, 0, virtual_disk_sos.super_block.first_free_byte);
+}
+
+void listusers(){
+  printf("――――――――――――――――――――――――――――――――――――――――――\n");
+  printf("| UID | Login                            |\n");
+  printf("――――――――――――――――――――――――――――――――――――――――――\n");
+  for(int i = 0; i < NB_USERS; i++){
+    printf("| %-3d | %-32s |\n", i, virtual_disk_sos.users_table[i].login);
+  }
+  printf("――――――――――――――――――――――――――――――――――――――――――\n");
 }
 
 int performCommand(command *cmd){
@@ -137,8 +148,20 @@ int performCommand(command *cmd){
       return 0;
     }
   }
+  else if(!strcmp(cmd->args[0], "listusers")){
+    listusers();
+    return 0;
+  }
+  else if(!strcmp(cmd->args[0], "help")){
+    dumpHelp();
+    return 0;
+  }
   else if(!strcmp(cmd->args[0], "quit")){
     return 1;
+  }else{
+    if(strcmp(cmd->args[0], "")){
+      printf("Unkown command, type 'help' to display help context.\n");
+    }
   }
   commandUsage(cmd->args[0]);
   return 0;
