@@ -61,7 +61,7 @@ void dumpHelp(){
 }
 
 void commandUsage(char* cmd){
-  if(strcmp(cmd, "ls")==0) printf("Usage: ls [-l]\n");
+  if(!strcmp(cmd, "ls")) printf("Usage: ls [-l]\n");
 }
 
 void printRights(unsigned int r){

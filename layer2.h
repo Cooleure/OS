@@ -51,10 +51,9 @@ void update_first_free_byte (int nbBlock, char sign, super_block_t * super_block
 /**
  * @brief Read the inode table on the system, return 0 if OK or READ_FAILURE if KO
  *
- * @param table
  * @return int
  */
-int read_inodes_table(inode_table_t * table);
+int read_inodes_table();
 
 /**
  * @brief Write the inodes table on the system with virtual disk virtual_disk_sos.inodes
@@ -79,8 +78,8 @@ int init_inode(char* file, int size, uint pos);
 
 /**
  * @brief Get the unused inode index
- * 
- * @return int 
+ *
+ * @return int
  */
 int get_unused_inode();
 

@@ -60,18 +60,18 @@ void update_free_byte (int nbBlock, char sign, super_block_t * super_block){
 }
 
 
-int read_inodes_table(inode_table_t * table){
+int read_inodes_table(){
   fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
 
-  if (fread(table, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
+  if (fread(virtual_disk_sos.inodes, INODE_TABLE_SIZE * INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
     fprintf(stderr, "Inode table reading problem\n");
     return READ_FAILURE;
   }
-  int i = 0;
   int nblocks = 0;
-  while(table[i]->size != 0){
-    nblocks+= table[i]->nblock;
-    i++;
+  for(int i = 0; i<INODE_TABLE_SIZE; i++){
+    if(strcmp(virtual_disk_sos.inodes[i].filename, "")){
+      nblocks+= virtual_disk_sos.inodes[i].nblock;
+    }
   }
   update_free_byte(nblocks, '+', &(virtual_disk_sos.super_block));
   return 1;
@@ -81,12 +81,9 @@ int write_inodes_table(){
   fseek(virtual_disk_sos.storage, INODES_START, SEEK_SET);
 
   for(int i = 0; i < INODE_TABLE_SIZE; i++){
-    if(virtual_disk_sos.inodes[i].size>0){
-      printf("Inode %d inode size: %d\n", i, INODE_SIZE);
-      if (fwrite(&(virtual_disk_sos.inodes[i]), INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
-        fprintf(stderr, "Inode writing problem\n");
-        return 0;
-      }
+    if (fwrite(&(virtual_disk_sos.inodes[i]), INODE_SIZE * BLOCK_SIZE, 1, virtual_disk_sos.storage) != 1){
+      fprintf(stderr, "Inode writing problem\n");
+      return 0;
     }
   }
   return 1;
@@ -106,14 +103,15 @@ void delete_inode(int i){
 
 int init_inode(char* file, int size, uint pos){
   if (virtual_disk_sos.super_block.number_of_files== 10){
+    fprintf(stderr, "Inode table full !\n");
     //Table d'inode pleine
     return 0;
   }
   assert(virtual_disk_sos.super_block.number_of_files < 10);
 
   //Recuperation du pointeur de la premiere inode dispo
-  inode_t* inode = &virtual_disk_sos.inodes[get_unused_inode()];
-  printf("%d\n", get_unused_inode());
+  int index = get_unused_inode();
+  inode_t* inode = &virtual_disk_sos.inodes[index];
 
   inode->size = size;
   inode->first_byte = pos;
@@ -135,7 +133,7 @@ int init_inode(char* file, int size, uint pos){
 
 int get_unused_inode(){
   for(int i = 0; i < INODE_TABLE_SIZE; i++){
-    if(virtual_disk_sos.inodes[i].size <= 0){
+    if(!strcmp(virtual_disk_sos.inodes[i].filename,"")){
       return i;
     }
   }

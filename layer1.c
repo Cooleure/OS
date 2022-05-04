@@ -19,11 +19,14 @@ int init_disk_sos(char* dirname){
   virtual_disk_sos.storage = fopen(tmp, "r+");
   free(tmp);
 
+  for(int i = 0; i<INODE_TABLE_SIZE; i++){
+    strcpy(virtual_disk_sos.inodes[i].filename, "");
+  }
 
   if((read_super_block(&virtual_disk_sos.super_block)) == READ_FAILURE){
     return 0;
   }
-  if((read_inodes_table(&virtual_disk_sos.inodes)) == READ_FAILURE){
+  if((read_inodes_table()) == READ_FAILURE){
     return 0;
   }
   load_user_table();

@@ -81,34 +81,42 @@ void ls(int lOption){
       printf("―");
     }
     printf("\n");
-    for(int i = 0; i<virtual_disk_sos.super_block.number_of_files; i++){
-      inode_t inode = virtual_disk_sos.inodes[i];
-      printf("%-*s | %7d\n", FILENAME_MAX_SIZE, inode.filename, inode.size);
+    for(int i = 0; i<INODE_TABLE_SIZE; i++){
+      if(strcmp(virtual_disk_sos.inodes[i].filename, "")){
+        inode_t inode = virtual_disk_sos.inodes[i];
+        printf("%-*s | %7d\n", FILENAME_MAX_SIZE, inode.filename, inode.size);
+      }
     }
   }else{
     for(int i = 0; i<40; i++){
       printf("―");
     }
     printf("\n");
-    for(int i = 0; i<virtual_disk_sos.super_block.number_of_files; i++){
-      inode_t inode = virtual_disk_sos.inodes[i];
-      printf("| ◉ File name     ▶ %s\n", inode.filename);
-      printf("| ◉ Size          ▶ %d (Bytes)\n", inode.size);
-      printf("| ◉ Owner id      ▶ %d\n", inode.uid);
-      printf("| ◉ Owner rights  ▶ ");
-      printRights(inode.uright);
-      printf("\n| ◉ User rights   ▶ ");
-      printRights(inode.oright);
-      printf("\n| ◉ Create date   ▶ %s", inode.ctimestamp);
-      printf("| ◉ Last update   ▶ %s", inode.mtimestamp);
-      printf("| ◉ Block count   ▶ %d\n", inode.nblock);
-      printf("| ◉ First byte    ▶ %d\n", inode.first_byte);
-      for(int i = 0; i<40; i++){
-        printf("―");
+    for(int i = 0; i<INODE_TABLE_SIZE; i++){
+      if(strcmp(virtual_disk_sos.inodes[i].filename, "")){
+        inode_t inode = virtual_disk_sos.inodes[i];
+        printf("| ◉ File name     ▶ %s\n", inode.filename);
+        printf("| ◉ Size          ▶ %d (Bytes)\n", inode.size);
+        printf("| ◉ Owner id      ▶ %d\n", inode.uid);
+        printf("| ◉ Owner rights  ▶ ");
+        printRights(inode.uright);
+        printf("\n| ◉ User rights   ▶ ");
+        printRights(inode.oright);
+        printf("\n| ◉ Create date   ▶ %s", inode.ctimestamp);
+        printf("| ◉ Last update   ▶ %s", inode.mtimestamp);
+        printf("| ◉ Block count   ▶ %d\n", inode.nblock);
+        printf("| ◉ First byte    ▶ %d\n", inode.first_byte);
+        for(int i = 0; i<40; i++){
+          printf("―");
+        }
+        printf("\n");
       }
-      printf("\n");
     }
   }
+}
+
+void cr(char *fileName){
+  init_inode(fileName, 0, virtual_disk_sos.super_block.first_free_byte);
 }
 
 int performCommand(command *cmd){
@@ -123,7 +131,13 @@ int performCommand(command *cmd){
       return 0;
     }
   }
-  if(!strcmp(cmd->args[0], "quit")){
+  else if(!strcmp(cmd->args[0], "cr")){
+    if(cmd->argc == 2){
+      cr(cmd->args[1]);
+      return 0;
+    }
+  }
+  else if(!strcmp(cmd->args[0], "quit")){
     return 1;
   }
   commandUsage(cmd->args[0]);
