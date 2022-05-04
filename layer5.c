@@ -125,7 +125,8 @@ void listusers(){
   printf("| UID | Login                            |\n");
   printf("――――――――――――――――――――――――――――――――――――――――――\n");
   for(int i = 0; i < NB_USERS; i++){
-    printf("| %-3d | %-32s |\n", i, virtual_disk_sos.users_table[i].login);
+    if(strcmp(virtual_disk_sos.users_table[i].login, ""))
+      printf("| %-3d | %-32s |\n", i, virtual_disk_sos.users_table[i].login);
   }
   printf("――――――――――――――――――――――――――――――――――――――――――\n");
 }
