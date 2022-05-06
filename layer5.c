@@ -8,8 +8,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "layer1.h"
 #include "layer3.h"
+#include "layer4.h"
 #include "layer5.h"
 #include "user_interface.h"
 #include "struct.h"
@@ -129,6 +133,53 @@ void listusers(){
       printf("| %-3d | %-32s |\n", i, virtual_disk_sos.users_table[i].login);
   }
   printf("――――――――――――――――――――――――――――――――――――――――――\n");
+}
+
+void edit(char* filename) {
+  int index;
+  file_t* file;
+  uint size;
+
+  //Verification fichier existe
+  if ((index = existing_file(virtual_disk_sos.inodes, filename)) != -1){
+
+    //Verification droits
+    if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].uright == Rw){
+      printf("Vous n'avez pas les droits pour editer ce fichier");
+      return;
+    }
+
+    //Creation du fichier tmp
+    int desF = open("tmp.txt", O_RDWR|O_CREAT, S_IRWXU);
+    if(desF == -1){
+      fprintf(stderr, "Erreur creation fichier tmp\n");
+      return;
+    }
+
+    read_file(filename, file);
+  
+    //Ecriture du texte dans le fichier tmp
+    write(desF, file->data, file->size);
+
+    //modification du fichier
+    system("nano tmp.txt");
+
+    //Verification taille fichier
+    size = lseek(desF, 0, SEEK_END);
+    if(size > MAX_FILE_SIZE){
+      fprintf(stderr, "Erreur, taille du fichier trop grande\n");
+      close(desF);
+      remove("tmp.txt");
+      return;
+    }
+    else{
+      read(desF, file->data, size);
+      file->size = size;
+    }
+
+    close(desF);
+    remove("tmp.txt");
+  }
 }
 
 int performCommand(command *cmd){
