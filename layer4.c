@@ -18,58 +18,65 @@
 #include "layer4.h"
 #include "struct.h"
 
-int existing_file(inode_table_t *inode_table, char *filename) {
+int existing_file(char *filename) {
 	for (int i = 0; i < INODE_TABLE_SIZE; i++)
-		if (strcmp(inode_table[i] -> filename, filename) == 0)
+		if (strcmp(virtual_disk_sos.inodes[i].filename, filename) == 0)
 			return i; // Exists
 	return -1; // Does not exist
 }
 
 int write_file(char *filename, file_t *file) {
-	inode_table_t *inode_table;
-	if (read_inodes_table(inode_table)) {
-		int fileIndex = existing_file(inode_table, filename);
+	if (read_inodes_table()) {
+		int fileIndex = existing_file(filename);
 		if (fileIndex >= 0) {
-			if (file -> size <= inode_table[fileIndex] -> size) {
-				// Modification de l'inode (à mettre dans une fonction update_inode() ?)
-				inode_table[fileIndex] -> size = file -> size;
-				inode_table[fileIndex] -> nblock = compute_nblock(file -> size);
+			if (file -> size <= virtual_disk_sos.inodes[fileIndex].size) {
+				// Modification de l'inode
+				virtual_disk_sos.inodes[fileIndex].size = file -> size;
+				virtual_disk_sos.inodes[fileIndex].nblock = compute_nblock(file -> size);
 
 				time_t timing = time(NULL);
-  				strcpy(inode_table[fileIndex] -> mtimestamp, ctime(&timing));
+  				strcpy(virtual_disk_sos.inodes[fileIndex].mtimestamp, ctime(&timing));
 
 				//Ecriture de cette table mise à jour
-				int backup = write_inodes_table();
-				return backup;
+				if (!write_inodes_table()) {
+					fprintf(stderr, "Update inodes table problem\n");
+					return 0;
+				}
 			} else {
 				delete_inode(fileIndex);
-				init_inode(filename, file -> size, virtual_disk_sos.super_block.first_free_byte);
+				if (!init_inode(filename, file -> size, virtual_disk_sos.super_block.first_free_byte)) {
+					fprintf(stderr, "Create inodes table problem\n");
+					return 0;
+				}
 			}
 		}
 		else {
-			init_inode(filename, file -> size, virtual_disk_sos.super_block.first_free_byte);
+			if (!init_inode(filename, file -> size, virtual_disk_sos.super_block.first_free_byte)) {
+				fprintf(stderr, "Create inodes table problem\n");
+				return 0;
+			}
 		}
 	} else {
 		fprintf(stderr, "Read inodes table problem\n");
 		return 0;
 	}
+
 	return 1;
 }
 
 int read_file(char *filename, file_t *file) {
-	inode_table_t *inode_table;
-	if (read_inodes_table(inode_table)) {
-		int fileIndex = existing_file(inode_table, filename);
+	if (read_inodes_table()) {
+		int fileIndex = existing_file(filename);
 		if (fileIndex >= 0) {
 			// Lecture du fichier
-			fseek(virtual_disk_sos.storage, inode_table[fileIndex] -> first_byte, SEEK_SET);
+			fseek(virtual_disk_sos.storage, virtual_disk_sos.inodes[fileIndex].first_byte, SEEK_SET);
 
 			if (fread(file -> data[MAX_FILE_SIZE], file -> size, 1, virtual_disk_sos.storage) != 1) {
 				fprintf(stderr, "Data file reading problem\n");
 				return READ_FAILURE;
 			}
 
-			file -> size = inode_table[fileIndex] -> size;
+			file -> size = virtual_disk_sos.inodes[fileIndex].size;
 		} else {
 			printf(stderr, "Attempt to read inexisting file\n");
 			return 0;
@@ -79,13 +86,13 @@ int read_file(char *filename, file_t *file) {
 		fprintf(stderr, "Read inodes table problem\n");
 		return 0;
 	}
+
 	return 1;
 }
 
 int delete_file(char *filename) {
-	inode_table_t *inode_table;
-	if (read_inodes_table(inode_table)) {
-		int fileIndex = existing_file(inode_table, filename);
+	if (read_inodes_table()) {
+		int fileIndex = existing_file(filename);
 		if (fileIndex) {
 			delete_inode(fileIndex);
 		} else {
@@ -97,6 +104,7 @@ int delete_file(char *filename) {
 		fprintf(stderr, "Read inodes table problem\n");
 		return 0;
 	}
+
 	return 1;
 }
 
@@ -128,7 +136,12 @@ int load_file_from_host(char *filename) {
 	}
 
 	// Ecriture sur le disque
-	return write_file(filename, &file);
+	if (!write_file(filename, &file)) {
+		fprintf(stderr, "Data file writing problem\n");
+		return 0;
+	}
+
+	return 1;
 }
 
 int store_file_to_host(char *filename) {
