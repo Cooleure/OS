@@ -141,7 +141,7 @@ void edit(char* filename) {
   uint size;
 
   //Verification fichier existe
-  if ((index = existing_file(virtual_disk_sos.inodes, filename)) != -1){
+  if ((index = existing_file(filename)) != -1){
 
     //Verification droits
     if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].uright == Rw){
