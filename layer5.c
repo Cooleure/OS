@@ -208,6 +208,10 @@ int performCommand(command *cmd){
     dumpHelp();
     return 0;
   }
+  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "edit")){
+    edit(cmd->args[1]);
+    return 0;
+  }
   else if(!strcmp(cmd->args[0], "quit")){
     return 1;
   }else{
