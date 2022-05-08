@@ -18,6 +18,13 @@
 #include "struct.h"
 #include "sha256_utils.h"
 #include "sha256.h"
+/**
+ * @brief return index of existing file in the table of inode or -1
+ * 
+ * @param filename 
+ * @return int 
+ */
+int existing_file(char *filename);
 
 /**
  * @brief Write file on the system. If does not exist, then created, else updated.

@@ -78,7 +78,7 @@ int read_file(char *filename, file_t *file) {
 
 			file -> size = virtual_disk_sos.inodes[fileIndex].size;
 		} else {
-			printf(stderr, "Attempt to read inexisting file\n");
+			fprintf(stderr, "Attempt to read inexisting file\n");
 			return 0;
 		}
 	}
@@ -122,7 +122,7 @@ int load_file_from_host(char *filename) {
 	file_t file;
 
 	struct stat infos;
-	if (fstat(idFile, &infos) == -1) {
+	if (stat(filename, &infos) == -1) {
 		fprintf(stderr, "Read stats file problem\n");
 		return 0;
 	}

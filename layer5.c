@@ -145,7 +145,7 @@ void edit(char* filename) {
 
     //Verification droits
     if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].uright == Rw){
-      printf("Vous n'avez pas les droits pour editer ce fichier");
+      printf("Vous n'avez pas les droits pour editer ce fichier\n");
       return;
     }
 
@@ -209,6 +209,7 @@ int performCommand(command *cmd){
     return 0;
   }
   else if(cmd->argc == 2 && !strcmp(cmd->args[0], "edit")){
+    printf("hello\n");
     edit(cmd->args[1]);
     return 0;
   }
