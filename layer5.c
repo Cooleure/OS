@@ -138,8 +138,10 @@ void listusers(){
 
 void edit(char* filename) {
   int index;
-  file_t* file;
+  file_t* file = malloc(sizeof(file_t));
   uint size;
+  int i=0;
+  int c;
 
   //Verification fichier existe
   if ((index = existing_file(filename)) != -1){
@@ -161,27 +163,47 @@ void edit(char* filename) {
     
     //Ecriture du texte dans le fichier tmp
     write(desF, file->data, file->size);
+    close(desF);
 
     //modification du fichier
     system("nano tmp.txt");
 
     //Verification taille fichier
-    size = lseek(desF, 0, SEEK_END);
+    FILE* f = fopen("tmp.txt", "rt");
+    if (f == NULL){
+      perror("tmp.txt");
+    }
+
+    fseek(f, 0, SEEK_END);
+    size = ftell(f);
     if(size > MAX_FILE_SIZE){
       fprintf(stderr, "Erreur, taille du fichier trop grande\n");
-      close(desF);
       remove("tmp.txt");
       return;
     }
     else{
-      read(desF, file->data, size);
       file->size = size;
+      fread(file->data, file->size, 1, f);
+      /*do{
+        c = fgetc(f);
+        if (c!= EOF){
+          file->data[i] = c;
+        }
+        i++;
+      }while(c != EOF);*/
+
+      printf("affichage : %s\n", file->data);
     }
 
-    close(desF);
+    fclose(f);
     remove("tmp.txt");
   }
+  else{
+    printf("Fichier inexistant\n");
+  }
 }
+
+
 void chmod1(char* filename){
   int mode;
   int index;
@@ -203,7 +225,10 @@ void chmod1(char* filename){
         break;
     }
     printf("Modification des droits termine\n");
-    write_inodes_table;
+    write_inodes_table();
+  }
+  else{
+    printf("Fichier inexistant\n");
   }
 }
 

@@ -71,12 +71,10 @@ int read_file(char *filename, file_t *file) {
 		if (fileIndex >= 0) {
 			// Lecture du fichier
 			fseek(virtual_disk_sos.storage, virtual_disk_sos.inodes[fileIndex].first_byte, SEEK_SET);
-			printf("test %d\n", virtual_disk_sos.inodes[fileIndex].size);
-			file->size = 0;
-			printf("OHHHHHHHHHHHHHHHHHH\n");
+			file->size = virtual_disk_sos.inodes[fileIndex].size;
+			if (file->size == 0) return 1;
 			
-			
-			if (fread(file -> data[MAX_FILE_SIZE], file->size, 1, virtual_disk_sos.storage) != 1) {
+			if (fread(file -> data, file->size, 1, virtual_disk_sos.storage) != 1) {
 				fprintf(stderr, "Data file reading problem\n");
 				return READ_FAILURE;
 			}
