@@ -181,6 +181,30 @@ void edit(char* filename) {
     remove("tmp.txt");
   }
 }
+void chmod1(char* filename){
+  int mode;
+  int index;
+  if ((index = existing_file(filename)) != -1){
+    printf("――――――――――――――――――――――――――――――――――――――――――\n");
+    printf("Voulez vous rendre le fichier accesible en lecture (1) | en ecriture (2) |en lecture/ecriture (3)\n");
+    scanf("%d", &mode);
+    switch(mode){
+      case 1:
+        virtual_disk_sos.inodes[index].oright = Rw;
+        break;
+      case 2 :
+        virtual_disk_sos.inodes[index].oright = rW;
+        break;
+      case 3 :
+        virtual_disk_sos.inodes[index].oright = RW;
+        break;
+      default :
+        break;
+    }
+    printf("Modification des droits termine\n");
+    write_inodes_table;
+  }
+}
 
 int performCommand(command *cmd){
   if(cmd->argc == 0) return 1;
@@ -209,8 +233,11 @@ int performCommand(command *cmd){
     return 0;
   }
   else if(cmd->argc == 2 && !strcmp(cmd->args[0], "edit")){
-    printf("hello\n");
     edit(cmd->args[1]);
+    return 0;
+  }
+  else if (cmd->argc == 2 && !strcmp(cmd->args[0], "chmod")){
+    chmod1(cmd->args[1]);
     return 0;
   }
   else if(!strcmp(cmd->args[0], "quit")){
