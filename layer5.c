@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include "layer1.h"
 #include "layer3.h"
 #include "layer4.h"
@@ -148,7 +149,7 @@ void edit(char* filename) {
       printf("Vous n'avez pas les droits pour editer ce fichier\n");
       return;
     }
-
+    
     //Creation du fichier tmp
     int desF = open("tmp.txt", O_RDWR|O_CREAT, S_IRWXU);
     if(desF == -1){
@@ -157,7 +158,7 @@ void edit(char* filename) {
     }
 
     read_file(filename, file);
-  
+    
     //Ecriture du texte dans le fichier tmp
     write(desF, file->data, file->size);
 

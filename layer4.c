@@ -67,16 +67,20 @@ int write_file(char *filename, file_t *file) {
 int read_file(char *filename, file_t *file) {
 	if (read_inodes_table()) {
 		int fileIndex = existing_file(filename);
+		
 		if (fileIndex >= 0) {
 			// Lecture du fichier
 			fseek(virtual_disk_sos.storage, virtual_disk_sos.inodes[fileIndex].first_byte, SEEK_SET);
-
-			if (fread(file -> data[MAX_FILE_SIZE], file -> size, 1, virtual_disk_sos.storage) != 1) {
+			printf("test %d\n", virtual_disk_sos.inodes[fileIndex].size);
+			file->size = 0;
+			printf("OHHHHHHHHHHHHHHHHHH\n");
+			
+			
+			if (fread(file -> data[MAX_FILE_SIZE], file->size, 1, virtual_disk_sos.storage) != 1) {
 				fprintf(stderr, "Data file reading problem\n");
 				return READ_FAILURE;
 			}
-
-			file -> size = virtual_disk_sos.inodes[fileIndex].size;
+		
 		} else {
 			fprintf(stderr, "Attempt to read inexisting file\n");
 			return 0;
@@ -130,7 +134,7 @@ int load_file_from_host(char *filename) {
 	file.size = infos.st_size;
 	if (file.size > MAX_FILE_SIZE) file.size = MAX_FILE_SIZE;
 
-	if (fread(file.data[MAX_FILE_SIZE], file.size, 1, idFile) != 1) {
+	if (fread(file.data, file.size, 1, idFile) != 1) {
 		fprintf(stderr, "Data file reading problem\n");
 		return 0;
 	}
