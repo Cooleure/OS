@@ -153,8 +153,8 @@ void edit(char* filename) {
     }
     
     //Creation du fichier tmp
-    int desF = open("tmp.txt", O_RDWR|O_CREAT, S_IRWXU);
-    if(desF == -1){
+    FILE* desF = fopen("tmp.txt", "wt");
+    if(desF == NULL){
       fprintf(stderr, "Erreur creation fichier tmp\n");
       return;
     }
@@ -162,11 +162,12 @@ void edit(char* filename) {
     read_file(filename, file);
     
     //Ecriture du texte dans le fichier tmp
-    write(desF, file->data, file->size);
-    close(desF);
+    fwrite(file->data, file->size, 1, desF);
+    fclose(desF);
 
     //modification du fichier
     system("nano tmp.txt");
+    
 
     //Verification taille fichier
     FILE* f = fopen("tmp.txt", "rt");
@@ -183,14 +184,15 @@ void edit(char* filename) {
     }
     else{
       file->size = size;
-      fread(file->data, file->size, 1, f);
-      /*do{
+      //fread(file->data, file->size, 1, f);
+      do{
         c = fgetc(f);
         if (c!= EOF){
           file->data[i] = c;
         }
         i++;
-      }while(c != EOF);*/
+      }while(c != EOF);
+      file->data[i] = '\0';
 
       printf("affichage : %s\n", file->data);
     }
