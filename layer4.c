@@ -29,7 +29,7 @@ int write_file(char *filename, file_t *file) {
 	if (read_inodes_table()) {
 		int fileIndex = existing_file(filename);
 		if (fileIndex >= 0) {
-			if (file -> size <= virtual_disk_sos.inodes[fileIndex].size) {
+			if (file -> size <= MAX_FILE_SIZE) {
 				// Modification de l'inode
 				virtual_disk_sos.inodes[fileIndex].size = file -> size;
 				virtual_disk_sos.inodes[fileIndex].nblock = compute_nblock(file -> size);

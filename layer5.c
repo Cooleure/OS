@@ -162,8 +162,10 @@ void edit(char* filename) {
     read_file(filename, file);
     
     //Ecriture du texte dans le fichier tmp
-    fwrite(file->data, file->size, 1, desF);
-    fclose(desF);
+    if (file->size > 0){
+      fprintf(desF, "%s", file->data);
+      fclose(desF);
+    }
 
     //modification du fichier
     system("nano tmp.txt");
@@ -184,17 +186,20 @@ void edit(char* filename) {
     }
     else{
       file->size = size;
-      //fread(file->data, file->size, 1, f);
-      do{
+      fread(file->data, sizeof(char), file->size, f);
+      /*do{
         c = fgetc(f);
         if (c!= EOF){
+          printf("c = %c\n", c);
           file->data[i] = c;
         }
+        else printf("OHHHHHHH\n");
         i++;
       }while(c != EOF);
-      file->data[i] = '\0';
-
+      file->data[i] = '\0';*/
+      file->data[file->size] = '\0';
       printf("affichage : %s\n", file->data);
+      write_file(filename, file);
     }
 
     fclose(f);
