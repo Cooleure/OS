@@ -186,7 +186,8 @@ void edit(char* filename) {
     }
     else{
       file->size = size;
-      fread(file->data, sizeof(char), file->size, f);
+      //fgets(file->data, file->size, f);
+      fread(file->data, file->size, 1, f);
       /*do{
         c = fgetc(f);
         if (c!= EOF){

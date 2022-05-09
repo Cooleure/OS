@@ -33,6 +33,10 @@ int write_file(char *filename, file_t *file) {
 				// Modification de l'inode
 				virtual_disk_sos.inodes[fileIndex].size = file -> size;
 				virtual_disk_sos.inodes[fileIndex].nblock = compute_nblock(file -> size);
+				fseek(virtual_disk_sos.storage, virtual_disk_sos.inodes[fileIndex].first_byte, SEEK_SET);
+				fwrite(file->data, file->size, 1, virtual_disk_sos.storage);
+				//Decalage des autres inodes
+
 
 				time_t timing = time(NULL);
   				strcpy(virtual_disk_sos.inodes[fileIndex].mtimestamp, ctime(&timing));
