@@ -111,7 +111,7 @@ void ls(int lOption){
         printf("| ◉ Last update   ▶ %s", inode.mtimestamp);
         printf("| ◉ Block count   ▶ %d\n", inode.nblock);
         printf("| ◉ First byte    ▶ %d\n", inode.first_byte);
-        printf("| ◉ Inode id    ▶ %d\n", i);
+        printf("| ◉ Inode id      ▶ %d\n", i);
         for(int i = 0; i<40; i++){
           printf("―");
         }

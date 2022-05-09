@@ -44,20 +44,20 @@ void dumpHelp(){
   printf("》Help Menu:《\n");
   printf("\n");
   italic("[] -> optional   <> -> required\n");
-  printf(" ⌨ quit                             ➪ poweroff OS\n");
-  printf(" ⌨ help                             ➪ display this help menu\n");
-  printf(" ⌨ ls [-l]                          ➪ list files\n");
-  printf(" ⌨ cat <file_name>                  ➪ dump file content\n");
-  printf(" ⌨ rm <file_name>                   ➪ remove a file\n");
-  printf(" ⌨ cr <file_name>                   ➪ create a file\n");
-  printf(" ⌨ edit <file_name>                 ➪ edit a file\n");
-  printf(" ⌨ load <file_name>                 ➪ load file from host\n");
-  printf(" ⌨ store <file_name>                ➪ store file to host\n");
-  printf(" ⌨ chown <file_name> <user_name>    ➪ change file owner\n");
-  printf(" ⌨ chmod <file_name>                ➪ change file rights\n");
-  printf(" ⌨ listusers                        ➪ list users\n");
-  printf(" ⌨ adduser <user_name>              ➪ create a new user\n");
-  printf(" ⌨ rmuser <user_name>               ➪ remove user\n");
+  printf(" ⌨  quit                             ➪ poweroff OS\n");
+  printf(" ⌨  help                             ➪ display this help menu\n");
+  printf(" ⌨  ls [-l]                          ➪ list files\n");
+  printf(" ⌨  cat <file_name>                  ➪ dump file content\n");
+  printf(" ⌨  rm <file_name>                   ➪ remove a file\n");
+  printf(" ⌨  cr <file_name>                   ➪ create a file\n");
+  printf(" ⌨  edit <file_name>                 ➪ edit a file\n");
+  printf(" ⌨  load <file_name>                 ➪ load file from host\n");
+  printf(" ⌨  store <file_name>                ➪ store file to host\n");
+  printf(" ⌨  chown <file_name> <user_name>    ➪ change file owner\n");
+  printf(" ⌨  chmod <file_name>                ➪ change file rights\n");
+  printf(" ⌨  listusers                        ➪ list users\n");
+  printf(" ⌨  adduser <user_name>              ➪ create a new user\n");
+  printf(" ⌨  rmuser <user_name>               ➪ remove user\n");
   printf("╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n");
 }
 
