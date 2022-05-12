@@ -252,6 +252,21 @@ void chmod1(char* filename){
   }
 }
 
+void rm (char* filename) {
+  int index;
+  char verif;
+  if ((index = existing_file(filename)) != -1){
+    printf("Voulez vous supprimer le fichier : %s ?\n", filename);
+    printf("y : yes | n : no\n");
+    scanf("%c", &verif);
+
+    if (verif == 'y'){
+      delete_file(filename);
+      printf("Fichier supprime\n");
+    }
+  }
+}
+
 int performCommand(command *cmd){
   if(cmd->argc == 0) return 1;
   if(!strcmp(cmd->args[0], "ls")){
@@ -284,6 +299,10 @@ int performCommand(command *cmd){
   }
   else if(cmd->argc == 2 && !strcmp(cmd->args[0], "cat")){
     cat(cmd->args[1]);
+    return 0;
+  }
+  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "rm")){
+    rm(cmd->args[1]);
     return 0;
   }
   else if (cmd->argc == 2 && !strcmp(cmd->args[0], "chmod")){
