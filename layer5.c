@@ -188,7 +188,7 @@ void edit(char* filename) {
     fgets(file->data, size, f);
     file->data[size] = '\0';
     file->size = size;
-    printf("affichage : %s\n", file->data);
+    //printf("affichage : %s\n", file->data);
     write_file(filename, file);
 
     fclose(f);
@@ -197,8 +197,32 @@ void edit(char* filename) {
   else{
     printf("Fichier inexistant\n");
   }
+  free(file);
 }
 
+void cat(char* filename){
+  file_t* file = malloc(sizeof(file_t));
+  int index;
+  if((index = existing_file(filename)) != -1){
+    //Verification droits
+    if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].uright == rW){
+      printf("Vous n'avez pas les droits pour lire ce fichier\n");
+      return;
+    }
+
+    read_file(filename, file);
+    if (file->size > 0){
+      printf("――――――――――――――――――――――――――――――――――――――――――\n");
+      printf("――――――――――――――――――%s―――――――――――――――――――\n", filename);
+      printf("%s\n", file->data);
+      printf("――――――――――――――――――――――――――――――――――――――――――\n");
+    }
+  }
+  else{
+    printf("Fichier inexistant");
+  }
+  free(file);
+}
 
 void chmod1(char* filename){
   int mode;
@@ -256,6 +280,10 @@ int performCommand(command *cmd){
   }
   else if(cmd->argc == 2 && !strcmp(cmd->args[0], "edit")){
     edit(cmd->args[1]);
+    return 0;
+  }
+  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "cat")){
+    cat(cmd->args[1]);
     return 0;
   }
   else if (cmd->argc == 2 && !strcmp(cmd->args[0], "chmod")){
