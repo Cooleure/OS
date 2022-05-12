@@ -29,29 +29,43 @@ int write_file(char *filename, file_t *file) {
 	if (read_inodes_table()) {
 		int fileIndex = existing_file(filename);
 		if (fileIndex >= 0) {
-			if (file -> size <= MAX_FILE_SIZE) {
+			inode_t inode = virtual_disk_sos.inodes[fileIndex]; // Copie de l'inode
+
+			time_t timing = time(NULL);
+			strcpy(inode.mtimestamp, ctime(&timing));
+
+			if (file -> size <= inode.size) { // Plus petit = màj de l'inode
 				// Modification de l'inode
 				virtual_disk_sos.inodes[fileIndex].size = file -> size;
 				virtual_disk_sos.inodes[fileIndex].nblock = compute_nblock(file -> size);
-				fseek(virtual_disk_sos.storage, virtual_disk_sos.inodes[fileIndex].first_byte, SEEK_SET);
-				fwrite(file->data, file->size, 1, virtual_disk_sos.storage);
-				//Decalage des autres inodes
+				strcpy(virtual_disk_sos.inodes[fileIndex].mtimestamp, inode.mtimestamp);
+			} else { // Plus grand = nouvelle inode
+				delete_inode(fileIndex); // Suppresion de l'ancienne inode
 
-
-				time_t timing = time(NULL);
-  				strcpy(virtual_disk_sos.inodes[fileIndex].mtimestamp, ctime(&timing));
-
-				//Ecriture de cette table mise à jour
-				if (!write_inodes_table()) {
-					fprintf(stderr, "Update inodes table problem\n");
-					return 0;
-				}
-			} else {
-				delete_inode(fileIndex);
 				if (!init_inode(filename, file -> size, virtual_disk_sos.super_block.first_free_byte)) {
 					fprintf(stderr, "Create inodes table problem\n");
 					return 0;
 				}
+
+				// Mise à jour des valeurs de la nouvelle inode (archivées dans la copie de l'ancienne)
+				fileIndex = existing_file(filename); // On retrouve sa position dans le tableau
+				inode_t *newInode = &(virtual_disk_sos.inodes[fileIndex]);
+
+				newInode -> uid = inode.uid;
+				newInode -> uright = inode.uright;
+				newInode -> oright = inode.oright;
+				strcpy(virtual_disk_sos.inodes[fileIndex].ctimestamp, inode.ctimestamp);
+				strcpy(virtual_disk_sos.inodes[fileIndex].mtimestamp, inode.mtimestamp);
+			}
+
+			// Ecriture sur le disque
+			fseek(virtual_disk_sos.storage, virtual_disk_sos.inodes[fileIndex].first_byte, SEEK_SET);
+			fwrite(file -> data, file -> size, 1, virtual_disk_sos.storage);
+
+			//Ecriture de cette table mise à jour
+			if (!write_inodes_table()) {
+				fprintf(stderr, "Update inodes table problem\n");
+				return 0;
 			}
 		}
 		else {
