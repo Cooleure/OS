@@ -140,8 +140,6 @@ void edit(char* filename) {
   int index;
   file_t* file = malloc(sizeof(file_t));
   uint size;
-  int i=0;
-  int c;
 
   //Verification fichier existe
   if ((index = existing_file(filename)) != -1){
@@ -170,13 +168,13 @@ void edit(char* filename) {
     //modification du fichier
     system("nano tmp.txt");
     
-
-    //Verification taille fichier
+    //Ouverture fichier tmp
     FILE* f = fopen("tmp.txt", "rt");
     if (f == NULL){
       perror("tmp.txt");
+      return;
     }
-
+    //Verification taille nouveau fichier
     fseek(f, 0, SEEK_END);
     size = ftell(f);
     if(size > MAX_FILE_SIZE){
@@ -184,24 +182,14 @@ void edit(char* filename) {
       remove("tmp.txt");
       return;
     }
-    else{
-      file->size = size;
-      //fgets(file->data, file->size, f);
-      fread(file->data, file->size, 1, f);
-      /*do{
-        c = fgetc(f);
-        if (c!= EOF){
-          printf("c = %c\n", c);
-          file->data[i] = c;
-        }
-        else printf("OHHHHHHH\n");
-        i++;
-      }while(c != EOF);
-      file->data[i] = '\0';*/
-      file->data[file->size] = '\0';
-      printf("affichage : %s\n", file->data);
-      write_file(filename, file);
-    }
+    //Lecture nouveau fichier
+    fseek(f, 0, SEEK_SET);
+    //fread(file->data, file->size, 1, f);
+    fgets(file->data, size, f);
+    file->data[size] = '\0';
+    file->size = size;
+    printf("affichage : %s\n", file->data);
+    write_file(filename, file);
 
     fclose(f);
     remove("tmp.txt");
