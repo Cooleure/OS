@@ -99,7 +99,7 @@ int read_file(char *filename, file_t *file) {
 int delete_file(char *filename) {
 	if (read_inodes_table()) {
 		int fileIndex = existing_file(filename);
-		if (fileIndex) {
+		if (fileIndex != -1) {
 			delete_inode(fileIndex);
 		} else {
 			fprintf(stderr, "Attempt to delete inexisting file\n");

@@ -95,6 +95,7 @@ void delete_inode(int i){
 
   virtual_disk_sos.inodes[i] = inode;
   virtual_disk_sos.inodes[get_unused_inode()-1].first_byte = 0;
+  strcpy(virtual_disk_sos.inodes[get_unused_inode()-1].filename, "");
   virtual_disk_sos.super_block.number_of_files--;
 
   //Actualisation de la table dans le disque
