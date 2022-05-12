@@ -56,7 +56,7 @@ void dumpHelp(){
   printf(" ⌨  chown <file_name> <user_name>    ➪ change file owner\n");
   printf(" ⌨  chmod <file_name>                ➪ change file rights\n");
   printf(" ⌨  listusers                        ➪ list users\n");
-  printf(" ⌨  adduser <user_name>              ➪ create a new user\n");
+  printf(" ⌨  adduser                          ➪ create a new user\n");
   printf(" ⌨  rmuser <user_name>               ➪ remove user\n");
   printf("╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n");
 }
