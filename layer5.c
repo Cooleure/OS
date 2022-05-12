@@ -267,6 +267,63 @@ void rm (char* filename) {
   }
 }
 
+void load (char* filename){
+  int verif = load_file_from_host(filename);
+  if (verif == 1){
+    printf("Copie Termine\n");
+  }
+}
+
+void store (char* filename){
+  int verif = store_file_to_host(filename);
+  if (verif == 1){
+    printf("Copie Termine\n");
+  }
+}
+
+void chown1 (char* filename, char* login){
+  int index;
+  int uid = 0;
+  while ((strcmp(login, virtual_disk_sos.users_table[uid].login)) && uid < virtual_disk_sos.super_block.number_of_users){
+    uid++;
+  }
+  if ((index = existing_file(filename)) != -1){
+    virtual_disk_sos.inodes[index].uid = uid;
+    printf("Changement de proprietaire termine\n");
+  }
+}
+
+void adduser (){
+  char login[FILENAME_MAX_SIZE];
+  
+  if (virtual_disk_sos.super_block.number_of_users < NB_USERS){
+    printf("Login : ");
+    scanf("%s", login);
+    printf("\n");
+    //Initialisation du mot de passe
+	  char hashRes[SHA256_BLOCK_SIZE*2 + 1];
+
+    printf("Définir un mot de passe utilisateur: ");
+    char mdp[PASSWORD_SIZE+1];
+    scanf("%s", mdp);
+    //fgets(mdp, PASSWORD_SIZE, stdin);
+    //mdp[strcspn(mdp, "\n")] = 0;
+    sha256ofString((BYTE *)mdp,hashRes);
+
+    new_user(login, mdp);
+  }
+}
+
+void rmuser (char* login){
+  int verif = delete_user(login);
+  if (verif == 0){
+    printf("Utilisateur supprime\n");
+  }
+  else{
+    printf("Utilisateur inconnu");
+  }
+}
+
 int performCommand(command *cmd){
   if(cmd->argc == 0) return 1;
   if(!strcmp(cmd->args[0], "ls")){
@@ -303,6 +360,26 @@ int performCommand(command *cmd){
   }
   else if(cmd->argc == 2 && !strcmp(cmd->args[0], "rm")){
     rm(cmd->args[1]);
+    return 0;
+  }
+  else if(cmd->argc == 1 && !strcmp(cmd->args[0], "adduser")){
+    adduser();
+    return 0;
+  }
+  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "rmuser")){
+    rmuser(cmd->args[1]);
+    return 0;
+  }
+  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "load")){
+    load(cmd->args[1]);
+    return 0;
+  }
+  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "store")){
+    store(cmd->args[1]);
+    return 0;
+  }
+  else if(cmd->argc == 3 && !strcmp(cmd->args[0], "chown")){
+    chown1(cmd->args[1], cmd->args[2]);
     return 0;
   }
   else if (cmd->argc == 2 && !strcmp(cmd->args[0], "chmod")){

@@ -71,11 +71,12 @@ int delete_user(char login[FILENAME_MAX_SIZE]){
     //Dernier utilisateur dans le tableau
     user_t user = virtual_disk_sos.users_table[virtual_disk_sos.super_block.number_of_users-1];
     while(i<virtual_disk_sos.super_block.number_of_users){
-        if(strcmp(login, virtual_disk_sos.users_table[i].login)){
+        if(!strcmp(login, virtual_disk_sos.users_table[i].login)){
             //remplacement de l'utilisateur
             virtual_disk_sos.users_table[i] = user;
             virtual_disk_sos.super_block.number_of_users--;
             write_user_table();
+            return 0;
         }
         i++;
     }
