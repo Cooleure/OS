@@ -8,6 +8,8 @@
 #ifndef LAYER5_H
 #define LAYER5_H
 
+extern session_t user;
+
 typedef struct s_command{
   char **args;
   int argc;
