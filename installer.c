@@ -22,17 +22,23 @@ void format(char *dirname, int size, int diskid){
   fclose(fp);
 }
 
-int main(){
+int main(void) {
   printf("Indiquez le répertoire dans lequel installer le système: ");
   char * dirName = malloc(sizeof(char));
-  scanf("%s", dirName);
+  if (scanf("%s", dirName) == EOF) {
+	  fprintf(stderr, "Directory name reading error\n");
+	  return 1;
+  }
   char *tmp = malloc(sizeof(char)*strlen(dirName) + 4);
   strcpy(tmp, dirName);
   strcat(tmp, "/d0");
   if((virtual_disk_sos.storage = fopen(tmp, "r+"))){
     char answer;
     printf("Cette installation va remettre à zéro le disque virtuel, en êtes vous sûr ? (y/n) ");
-    scanf(" %c", &answer);
+    if (scanf(" %c", &answer) == EOF) {
+		fprintf(stderr, "Reset reading error\n");
+		return 2;
+	}
     if(answer != 'y') {
       printf("'%c'", answer);
       return 0;
@@ -43,10 +49,16 @@ int main(){
   free(tmp);
   int diskSize;
   printf("Quelle taille souhaitez vous allouer à votre OS ?: ");
-  scanf("%d", &diskSize);
+  if (scanf("%d", &diskSize) == EOF) {
+	  fprintf(stderr, "OS size reading error\n");
+	  return 3;
+  }
   int diskId;
   printf("Quel id souhaitez vous donner au disque ?: ");
-  scanf("%d", &diskId);
+  if (scanf("%d", &diskId) == EOF) {
+	  fprintf(stderr, "Disk name reading error\n");
+	  return 4;
+  }
   format(dirName, diskSize, diskId);
   init_super_block();
   printf("Initialisation de l'utilisateur root...\n");

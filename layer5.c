@@ -166,7 +166,10 @@ void edit(char* filename) {
     }
 
     //modification du fichier
-    system("nano tmp.txt");
+	if (system("nano tmp.txt") != 0) {
+        fprintf(stderr, "Nano editing error\n");
+		return;
+    }
     
     //Ouverture fichier tmp
     FILE* f = fopen("tmp.txt", "rt");
@@ -185,7 +188,10 @@ void edit(char* filename) {
     //Lecture nouveau fichier
     fseek(f, 0, SEEK_SET);
     //fread(file->data, file->size, 1, f);
-    fgets(file->data, size, f);
+	if (fgets((char *) file->data, size, f) == NULL) {
+		fprintf(stderr, "Reading error edit\n");
+		return;
+	}
     file->data[size] = '\0';
     file->size = size;
     //printf("affichage : %s\n", file->data);
@@ -229,8 +235,11 @@ void chmod1(char* filename){
   int index;
   if ((index = existing_file(filename)) != -1){
     printf("――――――――――――――――――――――――――――――――――――――――――\n");
-    printf("Voulez vous rendre le fichier accesible en lecture (1) | en ecriture (2) |en lecture/ecriture (3)\n");
-    scanf("%d", &mode);
+    printf("Voulez vous rendre le fichier accesible en lecture (1) | en ecriture (2) | en lecture/ecriture (3)\n");
+    if(scanf("%d", &mode) == EOF) {
+		fprintf(stderr, "Chmod1 input reading error\n");
+		return;
+	}
     switch(mode){
       case 1:
         virtual_disk_sos.inodes[index].oright = Rw;
@@ -258,7 +267,10 @@ void rm (char* filename) {
   if ((index = existing_file(filename)) != -1){
     printf("Voulez vous supprimer le fichier : %s ?\n", filename);
     printf("y : yes | n : no\n");
-    scanf("%c", &verif);
+    if (scanf("%c", &verif) == EOF) {
+		fprintf(stderr, "Chmod1 input reading error\n");
+		return;
+	}
 
     if (verif == 'y'){
       delete_file(filename);
@@ -298,14 +310,20 @@ void adduser (){
   
   if (virtual_disk_sos.super_block.number_of_users < NB_USERS){
     printf("Login : ");
-    scanf("%s", login);
+    if (scanf("%s", login) == EOF) {
+		fprintf(stderr, "Adduser login reading error\n");
+		return;
+	}
     printf("\n");
     //Initialisation du mot de passe
 	  char hashRes[SHA256_BLOCK_SIZE*2 + 1];
 
     printf("Définir un mot de passe utilisateur: ");
     char mdp[PASSWORD_SIZE+1];
-    scanf("%s", mdp);
+    if (scanf("%s", mdp) == EOF) {
+		fprintf(stderr, "Chmod1 input reading error\n");
+		return;
+	}
     //fgets(mdp, PASSWORD_SIZE, stdin);
     //mdp[strcspn(mdp, "\n")] = 0;
     sha256ofString((BYTE *)mdp,hashRes);
@@ -405,7 +423,10 @@ int login(){
   dumpLogo();
   printf("Login to root: ");
   while(tries < 3){
-    fgets(password, PASSWORD_SIZE, stdin);
+    if (fgets(password, PASSWORD_SIZE, stdin) == NULL) {
+		fprintf(stderr, "Reading error loging\n");
+		return 0;
+	}
     password[strcspn(password, "\n")] = 0;
     sha256ofString((BYTE *)password,hashRes);
     if(strcmp(hashRes, virtual_disk_sos.users_table[ROOT_UID].passwd)==0){
@@ -428,7 +449,10 @@ int console(){
   dumpHelp();
   while(!exit){
     printf("%s ➣ ",login);
-    fgets(strCmd, 75, stdin);
+    if (fgets(strCmd, 75, stdin) == NULL) {
+		fprintf(stderr, "Reading error console\n");
+		return 1;
+	}
     strCmd[strcspn(strCmd, "\n")] = 0; //remove \n at end
 
     //Construct command

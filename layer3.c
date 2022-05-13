@@ -23,7 +23,10 @@ int init_user_table(){
 
     printf("Définir un mot de passe utilisateur: ");
     char mdp[PASSWORD_SIZE+1];
-    fgets(mdp, PASSWORD_SIZE, stdin);
+	if (fgets(mdp, PASSWORD_SIZE, stdin) == NULL) {
+		fprintf(stderr, "Error login init user table\n");
+		return 0;
+	}
     mdp[strcspn(mdp, "\n")] = 0;
     sha256ofString((BYTE *)mdp,hashRes);
     strcpy(virtual_disk_sos.users_table[ROOT_UID].passwd, hashRes);
@@ -43,6 +46,15 @@ int load_user_table(){
         return 0;
     }
     return 1;
+}
+
+int get_unused_user(){
+  for(int i = 0; i < NB_USERS; i++){
+    if(!strcmp(virtual_disk_sos.users_table[i].login,"")){
+      return i;
+    }
+  }
+  return virtual_disk_sos.super_block.number_of_files;
 }
 
 int new_user(char login[FILENAME_MAX_SIZE], char passwd[SHA256_BLOCK_SIZE*2 + 1]){
@@ -81,13 +93,4 @@ int delete_user(char login[FILENAME_MAX_SIZE]){
         i++;
     }
     return 1;
-}
-
-int get_unused_user(){
-  for(int i = 0; i < NB_USERS; i++){
-    if(!strcmp(virtual_disk_sos.users_table[i].login,"")){
-      return i;
-    }
-  }
-  return virtual_disk_sos.super_block.number_of_files;
 }

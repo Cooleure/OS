@@ -6,10 +6,10 @@
 #include "layer5.h"
 #include "layer3.h"
 
-int main(){
+int main(void) {
   init_disk_sos("Tests");
   //ecriture d'une inode dans la table d'inode et positionnement du premier byte à first_free_byte (pos)
-  if(login())console();
+  if(login()) console();
   switch_off();
   exit(0);
 }

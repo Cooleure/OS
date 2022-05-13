@@ -17,6 +17,10 @@ void format(char *dirname, int size, int diskid){
   for(int i=0; i<size; i++) {
     int nb_write = fwrite(&zero, 1, 1, fp);
     assert(nb_write == 1);
+	if (nb_write != 1) {
+		fprintf(stderr, "Write format error\n");
+		return;
+	}
   }
   fclose(fp);
 }
