@@ -129,6 +129,7 @@ void cr(char *fileName){
   int i = existing_file(fileName);
   virtual_disk_sos.inodes[i].uright = RW;
   virtual_disk_sos.inodes[i].uid = user.userid;
+  write_inodes_table();
 }
 
 void listusers(){
@@ -158,7 +159,7 @@ void edit(char* filename) {
         return;
       }
     }
-    else if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].oright == Rw){
+    else if (user.userid != 0 && (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].oright == Rw)){
       //Autre pas les droits
       printf("Vous n'avez pas les droits pour editer ce fichier\n");
       return;
@@ -232,7 +233,7 @@ void cat(char* filename){
         return;
       }
     }
-    else if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].oright == rW){
+    else if ((user.userid != 0) && (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].oright == rW)){
       //Autre pas les droits
       printf("Vous n'avez pas les droits pour lire ce fichier\n");
       return;
@@ -295,7 +296,7 @@ void rm (char* filename) {
   char verif;
   if ((index = existing_file(filename)) != -1){
     //Verification droits
-    if (virtual_disk_sos.inodes[index].uid != user.userid){
+    if (user.userid != 0 && virtual_disk_sos.inodes[index].uid != user.userid){
         //Proprietaire pas les droits
         printf("Vous n'avez pas les droits pour supprimer ce fichier\n");
         return;
