@@ -154,6 +154,8 @@ int load_file_from_host(char *filename) {
 		fprintf(stderr, "Data file reading problem\n");
 		return 0;
 	}
+	
+	file.data[file.size] = '\0';
 
 	// Ecriture sur le disque
 	if (!write_file(filename, &file)) {
@@ -173,7 +175,7 @@ int store_file_to_host(char *filename) {
 		return 0;
 	}
 
-	if (fwrite(file.data, 1, file.size, idFile) == 0) {
+	if (fwrite(file.data, file.size, 1, idFile) == 0) {
 		fprintf(stderr, "Data file writing problem\n");
 		return 0;
 	}

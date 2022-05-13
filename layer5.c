@@ -202,11 +202,19 @@ void edit(char* filename) {
     }
     //Lecture nouveau fichier
     fseek(f, 0, SEEK_SET);
+	int i = 0;
+	char ch;
+	do {
+        ch = fgetc(f);
+		file -> data[i] = (uchar) ch;
+		i++;
+    } while (ch != EOF);
+
     //fread(file->data, file->size, 1, f);
-	if (fgets((char *) file->data, size, f) == NULL) {
-		fprintf(stderr, "Reading error edit\n");
-		return;
-	}
+	// if (fgets((char *) file->data, size, f) == NULL) {
+	// 	fprintf(stderr, "Reading error edit\n");
+	// 	return;
+	// }
     file->data[size] = '\0';
     file->size = size;
     //printf("affichage : %s\n", file->data);
