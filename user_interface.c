@@ -58,6 +58,7 @@ void dumpHelp(){
   printf(" ⌨  listusers                        ➪ list users\n");
   printf(" ⌨  adduser                          ➪ create a new user\n");
   printf(" ⌨  rmuser <user_name>               ➪ remove user\n");
+  printf(" ⌨  chuser <user_name>               ➪ change user\n");
   printf("╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n");
 }
 

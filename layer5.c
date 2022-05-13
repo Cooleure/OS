@@ -20,6 +20,9 @@
 #include "struct.h"
 #include "sha256_utils.h"
 
+session_t user;
+
+
 void dumpCommand(command *cmd){
   for(int i = 0; i < cmd->argc; i++){
     printf("%s\n", cmd->args[i]);
@@ -145,7 +148,15 @@ void edit(char* filename) {
   if ((index = existing_file(filename)) != -1){
 
     //Verification droits
-    if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].uright == Rw){
+    if (virtual_disk_sos.inodes[index].uid == user.userid){
+      if (user.userid != 0 && (virtual_disk_sos.inodes[index].uright == Rw || virtual_disk_sos.inodes[index].uright == rw)){
+        //Proprietaire pas les droits
+        printf("Vous n'avez pas les droits pour editer ce fichier\n");
+        return;
+      }
+    }
+    else if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].oright == Rw){
+      //Autre pas les droits
       printf("Vous n'avez pas les droits pour editer ce fichier\n");
       return;
     }
@@ -211,7 +222,15 @@ void cat(char* filename){
   int index;
   if((index = existing_file(filename)) != -1){
     //Verification droits
-    if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].uright == rW){
+    if (virtual_disk_sos.inodes[index].uid == user.userid){
+      if (user.userid != 0 && (virtual_disk_sos.inodes[index].uright == rW || virtual_disk_sos.inodes[index].uright == rw)){
+        //Proprietaire pas les droits
+        printf("Vous n'avez pas les droits pour lire ce fichier\n");
+        return;
+      }
+    }
+    else if (virtual_disk_sos.inodes[index].oright == rw || virtual_disk_sos.inodes[index].oright == rW){
+      //Autre pas les droits
       printf("Vous n'avez pas les droits pour lire ce fichier\n");
       return;
     }
@@ -234,6 +253,13 @@ void chmod1(char* filename){
   int mode;
   int index;
   if ((index = existing_file(filename)) != -1){
+    //Verification droits
+    if (virtual_disk_sos.inodes[index].uid != user.userid){
+        //Proprietaire pas les droits
+        printf("Vous n'avez pas les droits pour changer les droits de ce fichier\n");
+        return;
+    }
+
     printf("――――――――――――――――――――――――――――――――――――――――――\n");
     printf("Voulez vous rendre le fichier accesible en lecture (1) | en ecriture (2) | en lecture/ecriture (3)\n");
     if(scanf("%d", &mode) == EOF) {
@@ -265,6 +291,13 @@ void rm (char* filename) {
   int index;
   char verif;
   if ((index = existing_file(filename)) != -1){
+    //Verification droits
+    if (virtual_disk_sos.inodes[index].uid != user.userid){
+        //Proprietaire pas les droits
+        printf("Vous n'avez pas les droits pour supprimer ce fichier\n");
+        return;
+    }
+
     printf("Voulez vous supprimer le fichier : %s ?\n", filename);
     printf("y : yes | n : no\n");
     if (scanf("%c", &verif) == EOF) {
@@ -300,12 +333,23 @@ void chown1 (char* filename, char* login){
     uid++;
   }
   if ((index = existing_file(filename)) != -1){
+    //Verification droits
+    if (virtual_disk_sos.inodes[index].uid != user.userid){
+        //Proprietaire pas les droits
+        printf("Vous n'avez pas les droits pour changer les droits de  ce fichier\n");
+        return;
+    }
     virtual_disk_sos.inodes[index].uid = uid;
     printf("Changement de proprietaire termine\n");
   }
 }
 
 void adduser (){
+  if (user.userid != 0){
+    printf("Vous n avez pas le droit de rajouter des utilisateurs\n");
+    return;
+  }
+
   char login[FILENAME_MAX_SIZE];
   
   if (virtual_disk_sos.super_block.number_of_users < NB_USERS){
@@ -333,12 +377,45 @@ void adduser (){
 }
 
 void rmuser (char* login){
+  if (user.userid != 0){
+    printf("Vous n avez pas le droit de supprimer des utilisateurs\n");
+    return;
+  }
   int verif = delete_user(login);
   if (verif == 0){
     printf("Utilisateur supprime\n");
   }
   else{
     printf("Utilisateur inconnu");
+  }
+}
+
+void changeUser (char* login){
+  int i=0;
+  char passwd[PASSWORD_SIZE+1];
+  char hashRes[SHA256_BLOCK_SIZE*2 + 1];
+  while (i< virtual_disk_sos.super_block.number_of_users){
+    if(!strcmp(login, virtual_disk_sos.users_table[i].login)){
+      printf("Mot de passe : ");
+      if (scanf("%s", passwd) == EOF) {
+		    fprintf(stderr, "changeUser input reading error\n");
+		    return;
+	    }
+      //fgets(mdp, PASSWORD_SIZE, stdin);
+      //mdp[strcspn(mdp, "\n")] = 0;
+      sha256ofString((BYTE *)passwd,hashRes);
+
+      //Verification mot de passe
+      if (!strcmp(passwd, virtual_disk_sos.users_table[i].passwd)){
+        user.userid = i;
+        printf("Changement d'utilisateur termine\n");
+      }
+      else{
+        printf("Mot de passe incorrect");
+      }
+      break;
+    }
+    i++;
   }
 }
 
@@ -404,6 +481,10 @@ int performCommand(command *cmd){
     chmod1(cmd->args[1]);
     return 0;
   }
+  else if (cmd->argc == 2 && !strcmp(cmd->args[0], "chuser")){
+    changeUser(cmd->args[1]);
+    return 0;
+  }
   else if(!strcmp(cmd->args[0], "quit")){
     return 1;
   }else{
@@ -442,7 +523,8 @@ int login(){
 
 int console(){
   int exit = 0;
-  char *login = "root";
+  char login[FILENAME_MAX_SIZE] = "root";
+  user.userid = 0;
   command *cmd;
   char *strCmd = malloc(sizeof(char)*75);
 
@@ -457,6 +539,9 @@ int console(){
 
     //Construct command
     cmd = createCommand(strCmd);
+    if (cmd->argc == 2 && !strcmp(cmd->args[0], "chuser")){
+      strcpy(login, cmd->args[1]);
+    }
     exit = performCommand(cmd);
     freeCommand(cmd);
     free(cmd);
