@@ -372,7 +372,7 @@ void adduser (){
     //mdp[strcspn(mdp, "\n")] = 0;
     sha256ofString((BYTE *)mdp,hashRes);
 
-    new_user(login, mdp);
+    new_user(login, hashRes);
   }
 }
 
@@ -390,7 +390,7 @@ void rmuser (char* login){
   }
 }
 
-void changeUser (char* login){
+int changeUser (char* login){
   int i=0;
   char passwd[PASSWORD_SIZE+1];
   char hashRes[SHA256_BLOCK_SIZE*2 + 1];
@@ -399,24 +399,26 @@ void changeUser (char* login){
       printf("Mot de passe : ");
       if (scanf("%s", passwd) == EOF) {
 		    fprintf(stderr, "changeUser input reading error\n");
-		    return;
+		    return 0;
 	    }
       //fgets(mdp, PASSWORD_SIZE, stdin);
       //mdp[strcspn(mdp, "\n")] = 0;
       sha256ofString((BYTE *)passwd,hashRes);
 
       //Verification mot de passe
-      if (!strcmp(passwd, virtual_disk_sos.users_table[i].passwd)){
+      if (!strcmp(hashRes, virtual_disk_sos.users_table[i].passwd)){
         user.userid = i;
         printf("Changement d'utilisateur termine\n");
+        return 1;
       }
       else{
-        printf("Mot de passe incorrect");
+        printf("Mot de passe incorrect\n");
       }
       break;
     }
     i++;
   }
+  return 0;
 }
 
 int performCommand(command *cmd){
@@ -481,10 +483,6 @@ int performCommand(command *cmd){
     chmod1(cmd->args[1]);
     return 0;
   }
-  else if (cmd->argc == 2 && !strcmp(cmd->args[0], "chuser")){
-    changeUser(cmd->args[1]);
-    return 0;
-  }
   else if(!strcmp(cmd->args[0], "quit")){
     return 1;
   }else{
@@ -525,6 +523,7 @@ int console(){
   int exit = 0;
   char login[FILENAME_MAX_SIZE] = "root";
   user.userid = 0;
+  int i=0;
   command *cmd;
   char *strCmd = malloc(sizeof(char)*75);
 
@@ -540,9 +539,12 @@ int console(){
     //Construct command
     cmd = createCommand(strCmd);
     if (cmd->argc == 2 && !strcmp(cmd->args[0], "chuser")){
-      strcpy(login, cmd->args[1]);
+      i = changeUser(cmd->args[1]);
+      if (i) strcpy(login, cmd->args[1]);
     }
-    exit = performCommand(cmd);
+    else{
+      exit = performCommand(cmd);
+    }
     freeCommand(cmd);
     free(cmd);
   }
