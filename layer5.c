@@ -552,9 +552,9 @@ int console(){
   while(!exit){
     printf("%s ➣ ",login);
     if (fgets(strCmd, 75, stdin) == NULL) {
-		fprintf(stderr, "Reading error console\n");
-		return 1;
-	}
+		  fprintf(stderr, "Reading error console\n");
+		  return 1;
+	  }
     strCmd[strcspn(strCmd, "\n")] = 0; //remove \n at end
 
     //Construct command
