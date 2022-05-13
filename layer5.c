@@ -126,6 +126,9 @@ void ls(int lOption){
 
 void cr(char *fileName){
   init_inode(fileName, 0, virtual_disk_sos.super_block.first_free_byte);
+  int i = existing_file(fileName);
+  virtual_disk_sos.inodes[i].uright = RW;
+  virtual_disk_sos.inodes[i].uid = user.userid;
 }
 
 void listusers(){
