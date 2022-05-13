@@ -1,0 +1,1 @@
+java -jar C:\Users\33640\Desktop\LinuxShared\LinuxShare\SOSDiag\SOSDiagnostic\target\SOSDiagnostic-1.0.jar
