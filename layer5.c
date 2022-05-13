@@ -163,7 +163,7 @@ void edit(char* filename) {
       printf("Vous n'avez pas les droits pour editer ce fichier\n");
       return;
     }
-    
+
     //Creation du fichier tmp
     FILE* desF = fopen("tmp.txt", "wt");
     if(desF == NULL){
@@ -172,7 +172,7 @@ void edit(char* filename) {
     }
 
     read_file(filename, file);
-    
+
     //Ecriture du texte dans le fichier tmp
     if (file->size > 0){
       fprintf(desF, "%s", file->data);
@@ -184,7 +184,7 @@ void edit(char* filename) {
         fprintf(stderr, "Nano editing error\n");
 		return;
     }
-    
+
     //Ouverture fichier tmp
     FILE* f = fopen("tmp.txt", "rt");
     if (f == NULL){
@@ -354,7 +354,7 @@ void adduser (){
   }
 
   char login[FILENAME_MAX_SIZE];
-  
+
   if (virtual_disk_sos.super_block.number_of_users < NB_USERS){
     printf("Login : ");
     if (scanf("%s", login) == EOF) {
@@ -450,41 +450,59 @@ int performCommand(command *cmd){
     dumpHelp();
     return 0;
   }
-  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "edit")){
-    edit(cmd->args[1]);
-    return 0;
+  else if(!strcmp(cmd->args[0], "edit")){
+    if(cmd->argc == 2){
+      edit(cmd->args[1]);
+      return 0;
+    }
   }
-  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "cat")){
-    cat(cmd->args[1]);
-    return 0;
+  else if(!strcmp(cmd->args[0], "cat")){
+    if(cmd->argc == 2){
+      cat(cmd->args[1]);
+      return 0;
+    }
   }
-  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "rm")){
-    rm(cmd->args[1]);
-    return 0;
+  else if(!strcmp(cmd->args[0], "rm")){
+    if(cmd->argc == 2){
+      rm(cmd->args[1]);
+      return 0;
+    }
   }
-  else if(cmd->argc == 1 && !strcmp(cmd->args[0], "adduser")){
-    adduser();
-    return 0;
+  else if(!strcmp(cmd->args[0], "adduser")){
+    if(cmd->argc == 1){
+      adduser();
+      return 0;
+    }
   }
-  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "rmuser")){
-    rmuser(cmd->args[1]);
-    return 0;
+  else if(!strcmp(cmd->args[0], "rmuser")){
+    if(cmd->argc == 2){
+      rmuser(cmd->args[1]);
+      return 0;
+    }
   }
-  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "load")){
-    load(cmd->args[1]);
-    return 0;
+  else if(!strcmp(cmd->args[0], "load")){
+    if(cmd->argc == 2){
+      load(cmd->args[1]);
+      return 0;
+    }
   }
-  else if(cmd->argc == 2 && !strcmp(cmd->args[0], "store")){
-    store(cmd->args[1]);
-    return 0;
+  else if(!strcmp(cmd->args[0], "store")){
+    if(cmd->argc == 2){
+      store(cmd->args[1]);
+      return 0;
+    }
   }
-  else if(cmd->argc == 3 && !strcmp(cmd->args[0], "chown")){
-    chown1(cmd->args[1], cmd->args[2]);
-    return 0;
+  else if(!strcmp(cmd->args[0], "chown")){
+    if(cmd->argc == 3){
+      chown1(cmd->args[1], cmd->args[2]);
+      return 0;
+    }
   }
-  else if (cmd->argc == 2 && !strcmp(cmd->args[0], "chmod")){
-    chmod1(cmd->args[1]);
-    return 0;
+  else if (!strcmp(cmd->args[0], "chmod")){
+    if(cmd->argc == 2){
+      chmod1(cmd->args[1]);
+      return 0;
+    }
   }
   else if(!strcmp(cmd->args[0], "quit")){
     return 1;

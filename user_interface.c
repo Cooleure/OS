@@ -64,7 +64,18 @@ void dumpHelp(){
 
 void commandUsage(char* cmd){
   if(!strcmp(cmd, "ls")) printf("Usage: ls [-l]\n");
-  if(!strcmp(cmd, "cr")) printf("Usage: cr <file_name>\n");
+  else if(!strcmp(cmd, "cat")) printf("Usage: cat <file_name>\n");
+  else if(!strcmp(cmd, "rm")) printf("Usage: rm <file_name>\n");
+  else if(!strcmp(cmd, "cr")) printf("Usage: cr <file_name>\n");
+  else if(!strcmp(cmd, "edit")) printf("Usage: edit <file_name>\n");
+  else if(!strcmp(cmd, "load")) printf("Usage: load <file_name>\n");
+  else if(!strcmp(cmd, "store")) printf("Usage: store <file_name>\n");
+  else if(!strcmp(cmd, "chown")) printf("Usage: chown <file_name> <user_name>\n");
+  else if(!strcmp(cmd, "chmod")) printf("Usage: chmod <file_name>\n");
+  else if(!strcmp(cmd, "listusers")) printf("Usage: listusers\n");
+  else if(!strcmp(cmd, "adduser")) printf("Usage: adduser\n");
+  else if(!strcmp(cmd, "rmuser")) printf("Usage: rmuser <user_name>\n");
+  else if(!strcmp(cmd, "chuser")) printf("Usage: chuser <user_name>\n");
 }
 
 void printRights(unsigned int r){
