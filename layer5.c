@@ -115,7 +115,7 @@ void ls(int lOption) {
 				printf("| ◉ Block count     ▶ %d\n", inode.nblock);
 				printf("| ◉ First byte      ▶ %d\n", inode.first_byte);
 				printf("| ◉ Inode id        ▶ %d\n", i);
-				
+
 				for(int i = 0; i<40; i++) {
 					printf("―");
 				}
@@ -474,7 +474,7 @@ int performCommand(command *cmd) {
 			ls(1);
 			return 0;
 		}
-	} else if (!strcmp(cmd->args[0], "cr")) {
+	}else if (!strcmp(cmd->args[0], "cr")) {
 		if (cmd->argc == 2) {
 			cr(cmd->args[1]);
 			return 0;

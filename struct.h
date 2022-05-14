@@ -35,7 +35,7 @@
 #define INODE_TABLE_SIZE 10 // taille fixe = nb max de fichiers dans le SE
 
 //Mem start section
-#define INODES_START SUPER_BLOCK_SIZE*BLOCK_SIZE+1 // en octets
+#define INODES_START SUPER_BLOCK_SIZE*BLOCK_SIZE // en octets
 #define USER_START INODES_START + INODE_TABLE_SIZE * (INODE_SIZE  * BLOCK_SIZE)//Where user table is stored (start)
 #define DATA_START USER_START + NB_USERS * USER_MEM_SIZE //Where blocks are stored
 
