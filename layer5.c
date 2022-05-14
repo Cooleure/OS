@@ -125,6 +125,10 @@ void ls(int lOption){
 }
 
 void cr(char *fileName){
+  if (existing_file(fileName) != -1){
+    printf("Le fichier existe deja !\n");
+    return;
+  }
   init_inode(fileName, 0, virtual_disk_sos.super_block.first_free_byte);
   int i = existing_file(fileName);
   virtual_disk_sos.inodes[i].uright = RW;
@@ -388,13 +392,38 @@ void adduser (){
   }
 }
 
+int user_id (char* login){
+  //renvoi l' id de l'utilisateur ou -1 si il n'existe pas
+  int i=0;
+  while (i < virtual_disk_sos.super_block.number_of_users){
+    if(!strcmp(login, virtual_disk_sos.users_table[i].login)){
+      return i;
+    }
+    i++;
+  }
+  return -1;
+}
+
+void modify_owner_file (int id){
+  //id est l'uid de l'utilisateur supprimé
+  for(int i=0; i<virtual_disk_sos.super_block.number_of_files; i++){
+    if (virtual_disk_sos.inodes[i].uid == id){
+      //Si fichier appartient à l'utilisateur supprimé on passe les droits à root
+      virtual_disk_sos.inodes[i].uid = 0;
+    }
+  }
+  write_inodes_table();
+}
+
 void rmuser (char* login){
   if (user.userid != 0){
     printf("Vous n avez pas le droit de supprimer des utilisateurs\n");
     return;
   }
+  int id = user_id(login);
   int verif = delete_user(login);
   if (verif == 0){
+    modify_owner_file(id);
     printf("Utilisateur supprime\n");
   }
   else{

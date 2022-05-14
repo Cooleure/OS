@@ -174,11 +174,11 @@ int store_file_to_host(char *filename) {
 		fprintf(stderr, "File reading on system problem\n");
 		return 0;
 	}
-
+	
 	if (fwrite(file.data, file.size, 1, idFile) == 0) {
 		fprintf(stderr, "Data file writing problem\n");
 		return 0;
 	}
-
+	fclose(idFile);
 	return 1;
 }
