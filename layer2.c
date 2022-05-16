@@ -126,6 +126,9 @@ int init_inode(char *file, int size, uint pos) {
 	time_t timing = time(NULL);
 	strcpy(inode->ctimestamp, ctime(&timing));
 	strcpy(inode->mtimestamp, ctime(&timing));
+	//Remove \n char
+	inode->ctimestamp[strcspn(inode->ctimestamp, "\n")] = 0;
+	inode->mtimestamp[strcspn(inode->mtimestamp, "\n")] = 0;
 
 	// Mise à jour du super block
 	virtual_disk_sos.super_block.nb_blocks_used += inode->nblock;

@@ -110,8 +110,8 @@ void ls(int lOption) {
 				printRights(inode.uright);
 				printf("\n| ◉ User rights     ▶ ");
 				printRights(inode.oright);
-				printf("\n| ◉ Create date     ▶ %s", inode.ctimestamp);
-				printf("| ◉ Last update     ▶ %s", inode.mtimestamp);
+				printf("\n| ◉ Create date     ▶ %s\n", inode.ctimestamp);
+				printf("| ◉ Last update     ▶ %s\n", inode.mtimestamp);
 				printf("| ◉ Block count     ▶ %d\n", inode.nblock);
 				printf("| ◉ First byte      ▶ %d\n", inode.first_byte);
 				printf("| ◉ Inode id        ▶ %d\n", i);
