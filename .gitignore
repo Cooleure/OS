@@ -16,3 +16,4 @@ osFromScratch
 cmd_format
 sha256_utils.o
 sha256.o
+test.txt
